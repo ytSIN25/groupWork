@@ -1,92 +1,67 @@
-const API = {
-  getUsers: async () => {
-    try {
-      let users = localStorage.getItem('lumiere_users');
-      if (!users) {
-        // Hardcoded defaults to ensure it works even if fetch fails (e.g. local file CORS)
-        const defaults = [
-          {
-            "id": "user-1",
-            "email": "eleanor.v@lumiere.com",
-            "password": "password123",
-            "name": "Eleanor Vance",
-            "role": "patron",
-            "tier": "Silver Screen Member",
-            "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Eleanor&backgroundColor=e8735a"
-          },
-          {
-            "id": "admin-1",
-            "email": "arthur@lumiere.com",
-            "password": "admin",
-            "name": "Arthur Pendelton",
-            "role": "admin",
-            "designation": "Chief Operator",
-            "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Arthur&backgroundColor=d4a853"
-          }
-        ];
+/* ================================================
+   LUMIÈRE - Main JS
+   ================================================ */
 
-        try {
-          const resp = await fetch('js/users.json');
-          if (resp.ok) {
-            users = await resp.json();
-          } else {
-            users = defaults;
-          }
-        } catch (err) {
-          console.warn('Fetch failed, using default users.', err);
-          users = defaults;
-        }
-        localStorage.setItem('lumiere_users', JSON.stringify(users));
-      } else {
-        users = JSON.parse(users);
-      }
-      return users;
-    } catch (e) {
-      console.error('Error fetching users:', e);
-      return [];
-    }
-  },
-  getMovies: async () => {
+const API = {
+  // Get current user from PHP session
+  getCurrentUser: async () => {
     try {
-      let movies = localStorage.getItem('lumiere_movies');
-      if (!movies) {
-        const resp = await fetch('js/movies.json');
-        if (!resp.ok) throw new Error('Failed to fetch movies');
-        movies = await resp.json();
-        localStorage.setItem('lumiere_movies', JSON.stringify(movies));
-      } else {
-        movies = JSON.parse(movies);
-      }
-      return movies;
+      const resp = await fetch('api_session.php');
+      const data = await resp.json();
+      return data.success ? data.user : null;
     } catch (e) {
-      console.error('Error fetching movies:', e);
-      return [];
+      console.error('Session check failed:', e);
+      return null;
     }
   },
-  updateMovies: (movies) => {
-    localStorage.setItem('lumiere_movies', JSON.stringify(movies));
-  },
+
+  // Login via PHP
   login: async (email, password) => {
-    const users = await API.getUsers();
-    const user = users.find(u => u.email === email && u.password === password);
-    if (user) {
-      localStorage.setItem('lumiere_session', JSON.stringify(user));
-      return user;
+    try {
+      const resp = await fetch('api_login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await resp.json();
+      return data.success ? data.user : null;
+    } catch (e) {
+      console.error('Login failed:', e);
+      return null;
     }
-    return null;
   },
-  getCurrentUser: () => {
-    const session = localStorage.getItem('lumiere_session');
-    return session ? JSON.parse(session) : null;
+
+  // Register via PHP
+  register: async (name, email, password) => {
+    try {
+      const resp = await fetch('api_register.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await resp.json();
+      return data;
+    } catch (e) {
+      console.error('Register failed:', e);
+      return { success: false, message: 'Network error' };
+    }
   },
-  logout: () => {
-    localStorage.removeItem('lumiere_session');
-    window.location.href = 'index-login.html';
+
+  // Logout via PHP
+  logout: async () => {
+    try {
+      await fetch('api_logout.php', { method: 'POST' });
+    } catch (e) {
+      console.error('Logout failed:', e);
+    }
+    window.location.href = 'index_login.php';
   }
 };
 
 window.API = API;
 
+
+// Animations - intersection observer for scroll fx
 document.addEventListener('DOMContentLoaded', () => {
   const animatedEls = document.querySelectorAll('.fade-up, .fade-left, .fade-right, .scale-in, .skew-up, .blur-in, .text-reveal');
   if (animatedEls.length > 0) {
@@ -102,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     animatedEls.forEach(el => observer.observe(el));
   }
 
+  // Page transition overlay
   const transEl = document.getElementById('pageTransition');
   if (transEl) {
     const removeTransition = () => {
@@ -112,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 600);
     };
 
-    // Safety fallback
     const safetyTimeout = setTimeout(removeTransition, 2000);
 
     requestAnimationFrame(() => {
@@ -124,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Trigger animated page transition
 window.triggerPageTransition = function(url) {
   const transEl = document.getElementById('pageTransition');
   if (transEl) {
@@ -137,11 +113,11 @@ window.triggerPageTransition = function(url) {
   }
 };
 
+// Intercept .html and .php link clicks
 document.addEventListener('click', e => {
-  const link = e.target.closest('a[href$=".html"]');
+  const link = e.target.closest('a[href$=".html"], a[href$=".php"]');
   if (link && !link.hasAttribute('data-no-transition')) {
     e.preventDefault();
     triggerPageTransition(link.getAttribute('href'));
   }
 });
-
