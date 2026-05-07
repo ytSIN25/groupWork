@@ -132,16 +132,16 @@
   </div>
 
   <nav class="lumiere-nav" style="padding: 15px 5%;">
-    <a href="dashboard-admin.html" class="lumiere-logo" style="gap: 10px;">
+    <a href="dashboard_admin.php" class="lumiere-logo" style="gap: 10px;">
       <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" style="height: 40px;">
       <span style="font-family: var(--font-accent); font-size: 1rem; color: var(--mocha); letter-spacing: 0.2em;">STAFF</span>
     </a>
     <div class="nav-links">
-      <a href="dashboard-admin.html" class="nav-link">Dashboard</a>
-      <a href="organiser-movies.html" class="nav-link">Catalog</a>
-      <a href="organiser-seat-sales.html" class="nav-link" style="color: var(--sunset-coral);">Live Sales</a>
-      <a href="organiser-promotions.html" class="nav-link">Promotions</a>
-      <a href="index.html" class="nav-link" style="color: var(--sunset-rose);">Exit Staff</a>
+      <a href="dashboard_admin.php" class="nav-link">Dashboard</a>
+      <a href="admin_add_movie.php" class="nav-link">Catalog</a>
+      <a href="admin_seat_sales.php" class="nav-link" style="color: var(--sunset-coral);">Live Sales</a>
+      <a href="admin_set_promotion.php" class="nav-link">Promotions</a>
+      <a href="index.php" class="nav-link" style="color: var(--sunset-rose);">Exit Staff</a>
     </div>
   </nav>
 

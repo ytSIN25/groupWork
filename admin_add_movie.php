@@ -22,15 +22,15 @@
     <div class="liquidGlass-tint"></div>
     <div class="liquidGlass-shine"></div>
     <div class="liquidGlass-content" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-      <a href="dashboard-admin.html" class="lumiere-logo" style="gap: 10px;">
+      <a href="dashboard_admin.php" class="lumiere-logo" style="gap: 10px;">
         <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" style="height: 40px;">
         <span style="font-family: var(--font-accent); font-size: 1rem; color: var(--mocha); letter-spacing: 0.2em;">STAFF</span>
       </a>
       <div class="nav-links">
-        <a href="dashboard-admin.html" class="nav-link">Dashboard</a>
-        <a href="organiser-movies.html" class="nav-link" style="color: var(--sunset-coral);">Catalog</a>
-        <a href="organiser-promotions.html" class="nav-link">Promotions</a>
-        <a href="dashboard.html" class="nav-link" style="color: var(--sunset-rose);">Exit Staff</a>
+        <a href="dashboard_admin.php" class="nav-link">Dashboard</a>
+        <a href="admin_add_movie.php" class="nav-link" style="color: var(--sunset-coral);">Catalog</a>
+        <a href="admin_set_promotion.php" class="nav-link">Promotions</a>
+        <a href="movies.php" class="nav-link" style="color: var(--sunset-rose);">Exit Staff</a>
       </div>
     </div>
   </nav>
@@ -122,7 +122,7 @@
             <input type="text" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" placeholder="assets/images/poster-new.png">
           </div>
 
-          <button class="btn-primary" style="width: 100%; margin-top: 20px; color: var(--bg-deep); border-color: var(--bg-deep);" type="button" onclick="Swal.fire({title:'Approved',text:'Picture added to archive.',icon:'success',background:'#F2E8D5',color:'#0D0B0E',iconColor:'#2A7A7A',confirmButtonColor:'#2A7A7A'}).then(()=>triggerPageTransition('dashboard-admin.html'))">
+          <button class="btn-primary" style="width: 100%; margin-top: 20px; color: var(--bg-deep); border-color: var(--bg-deep);" type="button" onclick="Swal.fire({title:'Approved',text:'Picture added to archive.',icon:'success',background:'#F2E8D5',color:'#0D0B0E',iconColor:'#2A7A7A',confirmButtonColor:'#2A7A7A'}).then(()=>triggerPageTransition('dashboard_admin.php'))">
             Add to Archive
           </button>
         </form>
