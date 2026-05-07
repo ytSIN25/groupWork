@@ -1,0 +1,26 @@
+[
+    {
+        "id": "movie-1",
+        "title": "Blade Runner 2049",
+        "year": "2017",
+        "status": "live",
+        "price": 15.00,
+        "screen": "Projection Hub"
+    },
+    {
+        "id": "movie-2",
+        "title": "Oppenheimer",
+        "year": "2023",
+        "status": "live",
+        "price": 12.00,
+        "screen": "The Vault"
+    },
+    {
+        "id": "movie-3",
+        "title": "Nosferatu",
+        "year": "1922",
+        "status": "planned",
+        "price": 10.00,
+        "screen": "The Crypt"
+    }
+]

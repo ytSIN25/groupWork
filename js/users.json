@@ -1,0 +1,22 @@
+[
+    {
+        "id": "user-1",
+        "email": "eleanor.v@lumiere.com",
+        "password": "password123",
+        "name": "Eleanor Vance",
+        "role": "patron",
+        "tier": "Bronze Reel Member",
+        "points": 2840,
+        "filmsThisYear": 12,
+        "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Eleanor&backgroundColor=e8735a"
+    },
+    {
+        "id": "admin-1",
+        "email": "arthur@lumiere.com",
+        "password": "admin",
+        "name": "Arthur Pendelton",
+        "role": "admin",
+        "designation": "Chief Operator",
+        "avatar": "https://api.dicebear.com/7.x/notionists/svg?seed=Arthur&backgroundColor=d4a853"
+    }
+]
