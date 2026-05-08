@@ -1,8 +1,8 @@
 <?php
 // ============================================
-// LUMIÈRE - Registration API
+// LUMIÈRE - Register API
 // POST { name, email, password }
-// Returns JSON { success, message? }
+// Returns JSON { success, user?, message? }
 // ============================================
 
 header('Content-Type: application/json');
@@ -16,36 +16,72 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = json_decode(file_get_contents('php://input'), true);
 
-$name     = trim($input['name']     ?? '');
-$email    = trim($input['email']    ?? '');
-$password = $input['password']      ?? '';
+$name     = trim($input['name']  ?? '');
+$email    = trim($input['email'] ?? '');
+$password = $input['password']   ?? '';
 
+// Validation
 if ($name === '' || $email === '' || $password === '') {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'All fields are required']);
     exit;
 }
 
-// Hash the password
-$hashed_password = password_hash($password, PASSWORD_BCRYPT);
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Invalid email address']);
+    exit;
+}
 
-// Insert into DB
-$stmt = $conn->prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, "patron")');
-$stmt->bind_param('sss', $name, $email, $hashed_password);
+if (strlen($password) < 4) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Password must be at least 4 characters']);
+    exit;
+}
 
-if ($stmt->execute()) {
-    $new_user_id = $conn->insert_id;
-    
-    // Auto-login
-    $_SESSION['user_id']   = $new_user_id;
-    $_SESSION['user_role'] = 'patron';
+// Check if email already exists
+$stmt = $conn->prepare('SELECT user_id FROM users WHERE email = ? LIMIT 1');
+$stmt->bind_param('s', $email);
+$stmt->execute();
+$stmt->store_result();
 
-    echo json_encode(['success' => true, 'message' => 'Registration successful']);
-} else {
-    if ($conn->errno === 1062) {
-        echo json_encode(['success' => false, 'message' => 'Email already registered']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Database error: ' . $conn->error]);
-    }
+if ($stmt->num_rows > 0) {  // If email is already registered
+    $stmt->close();
+    http_response_code(409);
+    echo json_encode(['success' => false, 'message' => 'This email is already registered']);
+    exit;
 }
 $stmt->close();
+
+// Hash the password
+$hashed = password_hash($password, PASSWORD_DEFAULT);
+
+// Generate avatar URL
+$avatar = 'https://api.dicebear.com/7.x/notionists/svg?seed=' . urlencode($name);
+
+// Insert new patron
+$role = 'patron';
+$stmt = $conn->prepare(
+    'INSERT INTO users (name, email, password, role, avatar) VALUES (?, ?, ?, ?, ?)'
+);
+$stmt->bind_param('sssss', $name, $email, $hashed, $role, $avatar);
+$stmt->execute();
+$newId = $conn->insert_id;
+$stmt->close();
+
+// Auto-login: store session
+$_SESSION['user_id']  = $newId;
+$_SESSION['user_role'] = 'patron';
+
+// Return the new user
+echo json_encode([
+    'success' => true,
+    'user'    => [
+        'user_id' => $newId,
+        'name'    => $name,
+        'email'   => $email,
+        'role'    => 'patron',
+        'tier'    => 'Bronze Reel Member',
+        'avatar'  => $avatar,
+    ],
+]);

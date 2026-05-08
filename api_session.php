@@ -1,35 +1,36 @@
 <?php
 // ============================================
-// LUMIÈRE - Session API
-// Returns JSON { success, user? }
+// LUMIÈRE - Session Check API
+// Returns current logged-in user or error
 // ============================================
 
 header('Content-Type: application/json');
 require_once 'config.php';
 
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['success' => false, 'message' => 'No active session']);
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Not logged in']);
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
-
-// Fetch latest user data
-$stmt = $conn->prepare('SELECT user_id, name, email, role, tier, avatar FROM users WHERE user_id = ?');
-$stmt->bind_param('i', $user_id);
+// Fetch fresh user data from database (in case of updates)
+$stmt = $conn->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
+$stmt->bind_param('i', $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
 
-if ($user) {
-    // Add some mock stats if not in DB yet
-    $user['films_this_year'] = 12;
-    $user['points'] = 2840;
-    
-    echo json_encode(['success' => true, 'user' => $user]);
-} else {
-    // Session exists but user deleted
+if (!$user) {
     session_destroy();
+    http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'User not found']);
+    exit;
 }
+
+unset($user['password']); // Remove password before sending user data for security
+
+echo json_encode([
+    'success' => true,
+    'user'    => $user,
+]);
