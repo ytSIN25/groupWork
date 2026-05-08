@@ -1,3 +1,12 @@
+<?php
+require_once 'config.php';
+
+// Redirect to login if session not found
+if (!isset($_SESSION['user_id'])) {
+    header('Location: index_login.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 

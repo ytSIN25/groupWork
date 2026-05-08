@@ -1,3 +1,19 @@
+<?php
+require_once 'config.php';
+
+// Redirect to login if session not found
+if (!isset($_SESSION['user_id'])) {
+    header('Location: index_login.php');
+    exit();
+}
+
+// If admin accidentally hits this page, send them to admin dashboard
+if ($_SESSION['user_role'] === 'admin') {
+    header('Location: dashboard_admin.php');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -229,7 +245,7 @@
             <button class="tab-btn" onclick="switchTab(event, 'settings')"><span>Profile Settings</span> ⚙️</button>
 
             <div class="divider" style="margin:30px 0;"></div>
-            <a href="index.php" class="btn-primary"
+            <a href="#" onclick="API.logout(); return false;" class="btn-primary"
                 style="width:100%; text-align:center; border-color:var(--retro-red); color:var(--retro-red);">Log
                 Out</a>
         </aside>
@@ -382,24 +398,28 @@
 
     <script src="js/main.js?v=5"></script>
     <script>
-
-        const currentPatron = API.getCurrentUser();
-        if(!currentPatron) {
-            window.location.href = 'index_login.php';
+        async function startDashboard() {
+            const user = await API.getCurrentUser();
+            if(!user) {
+                window.location.href = 'index_login.php';
+                return;
+            }
+            initUser(user);
         }
 
-        function initUser() {
-
+        function initUser(user) {
             const sidebar = document.querySelector('.sidebar');
-            sidebar.querySelector('img').src = currentPatron.avatar;
-            sidebar.querySelector('h2').innerText = currentPatron.name;
-            sidebar.querySelector('p').innerText = currentPatron.tier;
+            sidebar.querySelector('img').src = user.avatar || "https://api.dicebear.com/7.x/notionists/svg?seed=" + user.name;
+            sidebar.querySelector('h2').innerText = user.name;
+            sidebar.querySelector('p').innerText = user.tier;
 
-            document.querySelector('.section-header h1').innerText = `Welcome Back, ${currentPatron.name.split(' ')[0]}`;
+            document.querySelector('.section-header h1').innerText = `Welcome Back, ${user.name.split(' ')[0]}`;
 
             const stats = document.querySelectorAll('.user-stat-value');
-            stats[0].innerText = currentPatron.filmsThisYear;
-            stats[1].innerText = currentPatron.points;
+            if (stats.length >= 2) {
+                stats[0].innerText = user.films_this_year || 0;
+                stats[1].innerText = user.points || 0;
+            }
         }
 
         function switchTab(event, tabId) {
@@ -410,7 +430,7 @@
             event.currentTarget.classList.add('active');
         }
 
-        initUser();
+        startDashboard();
     </script>
 </body>
 

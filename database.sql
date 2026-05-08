@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS movies (
     movie_name   VARCHAR(255) NOT NULL,
     user_id      INT NOT NULL,
     director     VARCHAR(255),
-    genre        VARCHAR(100),
+    genre        ENUM('Action', 'Adventure', 'Comedy', 'Crime', 'Drama', 'Fantasy', 'Historical', 'Horror', 'Musical', 'Romance', 'Sci-Fi', 'Thriller'),
     release_year INT,
     starring     TEXT,
     description  TEXT,
@@ -111,28 +111,3 @@ CREATE TABLE IF NOT EXISTS ratings (
     FOREIGN KEY (user_id)  REFERENCES users(user_id)  ON DELETE CASCADE,
     FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE
 );
-
--- Insert Sample Movies
-INSERT INTO movies (movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, price, start_date) 
-VALUES 
--- 1. LIVE MOVIE (Started 5 days ago, within 14-day range)
-('Oppenheimer', 1, 'Christopher Nolan', 'Biography', 2023, 'Cillian Murphy', 'Atomic bomb biography.', 'assets/images/poster-oppenheimer.png', 180, 12.00, '2026-05-03'),
-
--- 2. LIVE MOVIE (Started today)
-('Dune: Part Two', 1, 'Denis Villeneuve', 'Sci-Fi', 2024, 'Zendaya', 'Desert epic.', 'assets/images/poster-dune.png', 166, 15.00, '2026-05-08'),
-
--- 3. COMING SOON (Starts in 3 days)
-('Nosferatu', 1, 'Robert Eggers', 'Horror', 2024, 'Bill Skarsgård', 'Gothic horror.', 'assets/images/poster-nosferatu.png', 125, 12.50, '2026-05-11'),
-
--- 4. DOWN! (Started 20 days ago, past 14-day range)
-('Interstellar', 1, 'Christopher Nolan', 'Sci-Fi', 2014, 'Matthew McConaughey', 'Space travel.', 'assets/images/poster-interstellar.png', 169, 10.00, '2026-04-18'),
-
--- 5. LIVE MOVIE (Started 10 days ago, near end of range)
-('Blade Runner 2049', 1, 'Denis Villeneuve', 'Sci-Fi', 2017, 'Ryan Gosling', 'Neon detective.', 'assets/images/poster-bladerunner.png', 164, 15.00, '2026-04-28');
-
--- Insert some dummy Showtimes for the active movies
-INSERT INTO showtimes (movie_id, auditorium_number, show_date, start_time)
-VALUES 
-(1, 1, '2026-05-08', '14:00:00'),
-(2, 2, '2026-05-08', '19:00:00'),
-(5, 3, '2026-05-08', '21:30:00');
