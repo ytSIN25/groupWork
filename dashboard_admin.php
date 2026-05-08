@@ -131,6 +131,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
             display: flex;
             flex-direction: column;
             gap: 10px;
+            font-family: var(--font-accent);
         }
 
         .admin-sidebar h2 {
@@ -147,7 +148,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
             background: none;
             border: none;
             color: var(--cream-dim, #e0d8c8);
-            font-family: var(--font-accent, sans-serif);
+            font-family: inherit;
             text-align: left;
             padding: 15px;
             font-size: 1.1rem;
@@ -157,6 +158,8 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
             display: flex;
             align-items: center;
             gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
 
         .admin-nav-btn:hover {
@@ -419,14 +422,14 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
             <div id="overview" class="tab-pane active">
                 <div class="section-header" style="text-align:left; margin-bottom:50px;">
                     <h1 style="font-style:italic; font-size:3rem; color: var(--cream, #fff);">Executive Summary</h1>
-                    <p style="color: var(--cream-dim, #e0d8c8);">Performance metrics for the current theatrical week.</p>
+                    <p style="color: var(--cream-dim, #e0d8c8); margin:0;">Performance metrics for the current theatrical week.</p>
                 </div>
 
                 <div class="stats-grid"
                     style="display:grid; grid-template-columns:repeat(3, 1fr); gap:30px; margin-bottom:60px;">
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Total Gross Revenue</span>
-                        <div class="stat-value-admin">RM<?php echo number_format($total_gross_all_time, 0); ?></div>
+                        <div class="stat-value-admin">RM <?php echo number_format($total_gross_all_time, 0); ?></div>
                         <p style="margin-top:10px; font-size:0.8rem; color:var(--retro-mint, #88c0d0);">Lifetime Performance</p>
                     </div>
                     <div class="stat-card-premium">
@@ -476,7 +479,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                 <div style="background:var(--bg-card, #1a1520); border:1px solid rgba(212,168,83,0.1); padding:30px; border-radius:8px; margin-top: 30px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
                         <h3 style="color:var(--cream, #fff); font-size:1.4rem;">Current Programme</h3>
-                        <button class="btn-primary" style="padding:6px 18px; font-size:0.85rem; background:none; border:1px solid var(--gold); color:var(--gold); border-radius:4px; cursor:pointer;" onclick="switchAdmin(event, 'catalog')">Manage</button>
+                        <button class="btn-primary" style="padding:6px 18px; font-size:0.85rem; background:none; border:1px solid var(--gold); color:var(--gold); border-radius:4px; cursor:pointer;" onclick="switchAdmin(event, 'catalog'); setActiveNav('catalog')">Manage</button>
                     </div>
 
                     <div style="display:flex; gap:20px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: thin; scrollbar-color: var(--gold) transparent;">
@@ -647,6 +650,18 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
             document.querySelectorAll('.admin-nav-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             if (event) event.currentTarget.classList.add('active');
+        }
+
+        function setActiveNav(tabId) {
+            document.querySelectorAll('.admin-nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+
+                const onclick = btn.getAttribute('onclick');
+
+                if (onclick && onclick.includes(tabId)) {
+                    btn.classList.add('active');
+                }
+            });
         }
 
         // Chart.js init

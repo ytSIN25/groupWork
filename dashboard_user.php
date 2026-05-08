@@ -222,6 +222,7 @@ if ($_SESSION['user_role'] === 'admin') {
             <a href="movies.php" class="nav-link">Now Showing</a>
             <a href="history.php" class="nav-link">My Tickets</a>
             <a href="dashboard_user.php" class="nav-link" style="color:var(--sunset-coral);">Account</a>
+            <a href="about.php" class="nav-link">The Cinema</a>
         </div>
     </nav>
 
@@ -253,8 +254,8 @@ if ($_SESSION['user_role'] === 'admin') {
         <main style="flex:1;">
             <div id="overview" class="tab-pane active">
                 <div class="section-header fade-up" style="text-align:left;">
-                    <h1 style="font-size:3rem; font-style:italic;">Welcome Back, Eleanor</h1>
-                    <p>Your portal to the golden age of cinema.</p>
+                    <h1 style="font-size:3rem; font-style:italic;">Welcome Back</h1>
+                    <p style="margin:0;">Your portal to the golden age of cinema.</p>
                 </div>
 
                 <div class="user-stats fade-up" data-delay="200">
