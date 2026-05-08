@@ -83,19 +83,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt_up->bind_param("sssssssidsi", $title, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $price, $start_date, $movie_id);
 
         if ($stmt_up->execute()) {
-            // Update Showtimes (Delete and Re-insert is simplest for this scale)
-            $conn->query("DELETE FROM showtimes WHERE movie_id = $movie_id");
-            $slots = explode(',', $time_slots);
-            foreach ($slots as $slot) {
-                $slot = trim($slot);
-                if ($slot !== "") {
-                    $stmt_st = $conn->prepare("INSERT INTO showtimes (movie_id, auditorium_number, show_date, start_time) VALUES (?, ?, ?, ?)");
-                    $stmt_st->bind_param("iiss", $movie_id, $auditorium, $start_date, $slot);
-                    $stmt_st->execute();
-                    $stmt_st->close();
+            // Safely Update Showtimes
+            $new_slots = array_map('trim', explode(',', $time_slots));
+            
+            // 1. Get existing showtimes for this movie
+            $existing_stmt = $conn->prepare("SELECT showtime_id, start_time FROM showtimes WHERE movie_id = ?");
+            $existing_stmt->bind_param("i", $movie_id);
+            $existing_stmt->execute();
+            $existing_res = $existing_stmt->get_result();
+            $existing_slots = [];
+            while($row = $existing_res->fetch_assoc()) {
+                $existing_slots[substr($row['start_time'], 0, 5)] = $row['showtime_id'];
+            }
+            $existing_stmt->close();
+
+            // 2. Process requested slots
+            $processed_ids = [];
+            foreach ($new_slots as $slot) {
+                if ($slot === "") continue;
+                $formatted_slot = date("H:i", strtotime($slot));
+                
+                if (isset($existing_slots[$formatted_slot])) {
+                    // Update existing
+                    $sid = $existing_slots[$formatted_slot];
+                    $up_st = $conn->prepare("UPDATE showtimes SET show_date = ?, auditorium_number = ? WHERE showtime_id = ?");
+                    $up_st->bind_param("sii", $start_date, $auditorium, $sid);
+                    $up_st->execute();
+                    $up_st->close();
+                    $processed_ids[] = $sid;
+                } else {
+                    // Insert new
+                    $ins_st = $conn->prepare("INSERT INTO showtimes (movie_id, auditorium_number, show_date, start_time) VALUES (?, ?, ?, ?)");
+                    $ins_st->bind_param("iiss", $movie_id, $auditorium, $start_date, $slot);
+                    $ins_st->execute();
+                    $processed_ids[] = $conn->insert_id;
+                    $ins_st->close();
                 }
             }
-            $message = "Amendments recorded in the archive.";
+
+            // 3. Remove old slots ONLY IF they have no orders
+            foreach ($existing_slots as $time => $sid) {
+                if (!in_array($sid, $processed_ids)) {
+                    // Check for orders
+                    $order_check = $conn->query("SELECT COUNT(*) as count FROM orders WHERE showtime_id = $sid");
+                    $has_orders = $order_check->fetch_assoc()['count'] > 0;
+                    if (!$has_orders) {
+                        $conn->query("DELETE FROM showtimes WHERE showtime_id = $sid");
+                    }
+                }
+            }
+            $message = "Amendments recorded. Sales data preserved.";
             // Refresh local movie data for display
             $movie['movie_name'] = $title;
             $movie['poster_path'] = $poster_path;
@@ -105,7 +142,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt_up->close();
     }
 }
+
+// 4. Handle Deletion Request
+if (isset($_POST['delete_movie'])) {
+    // A. Fetch poster path to delete the physical file
+    $stmt_path = $conn->prepare("SELECT poster_path FROM movies WHERE movie_id = ? AND user_id = ?");
+    $admin_id = $_SESSION['user_id'];
+    $stmt_path->bind_param("ii", $movie_id, $admin_id);
+    $stmt_path->execute();
+    $path_res = $stmt_path->get_result();
+    $path_data = $path_res->fetch_assoc();
+    $stmt_path->close();
+
+    if ($path_data && !empty($path_data['poster_path'])) {
+        $p_path = $path_data['poster_path'];
+        // Don't delete if it's an external URL or a protected asset
+        if (file_exists($p_path) && strpos($p_path, 'http') === false) {
+            unlink($p_path);
+        }
+    }
+
+    // B. Cascade handles showtimes and orders automatically due to DB constraints
+    $stmt_del = $conn->prepare("DELETE FROM movies WHERE movie_id = ? AND user_id = ?");
+    $stmt_del->bind_param("ii", $movie_id, $admin_id);
+    
+    if ($stmt_del->execute()) {
+        header('Location: dashboard_admin.php?msg=Movie+and+assets+successfully+purged');
+        exit();
+    } else {
+        $message = "Error during deletion: " . $stmt_del->error;
+    }
+    $stmt_del->close();
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -176,7 +246,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div style="display: flex; gap: 20px;">
                                 <div class="form-group" style="flex: 1;">
                                     <label style="color: var(--bg-deep); font-weight: 600;">Genre</label>
-                                    <input type="text" name="genre" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo htmlspecialchars($movie['genre']); ?>">
+                                    <select name="genre" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha); width: 100%; cursor: pointer;">
+                                        <?php
+                                        $genres = ['Action', 'Adventure', 'Comedy', 'Crime', 'Drama', 'Fantasy', 'Historical', 'Horror', 'Musical', 'Romance', 'Sci-Fi', 'Thriller'];
+                                        foreach ($genres as $g) {
+                                            $selected = ($movie['genre'] === $g) ? 'selected' : '';
+                                            echo "<option value=\"$g\" $selected>$g</option>";
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label style="color: var(--bg-deep); font-weight: 600;">Runtime (min)</label>
@@ -211,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="text" name="time_slots" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $time_slots_str; ?>" required>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
-                                    <label style="color: var(--bg-deep); font-weight: 600;">Base Price (ÂRM)</label>
+                                    <label style="color: var(--bg-deep); font-weight: 600;">Base Price (RM)</label>
                                     <input type="number" step="0.01" name="price" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $movie['price']; ?>">
                                 </div>
                             </div>
@@ -232,6 +310,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="form-group">
                             <label style="color: var(--mocha); font-weight: 600;">Update Poster (Optional)</label>
                             <input type="file" name="poster" class="typewriter-input" style="color: var(--mocha); border-color: var(--mocha); padding: 8px;" accept="image/*" onchange="checkFileSize(this)">
+                        </div>
+
+                        <div style="margin-top: 40px; border-top: 1px solid rgba(212, 168, 83, 0.1); padding-top: 30px;">
+                            <button type="button" class="btn-primary" onclick="confirmDelete()" style="width: 100%; border-color: var(--retro-red); color: var(--retro-red); background: transparent;">
+                                Permanent Deletion
+                            </button>
+                            <input type="hidden" name="delete_movie" id="deleteTrigger" value="0">
                         </div>
                     </div>
                 </div>
@@ -276,6 +361,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     input.value = '';
                 }
             }
+        }
+
+        function confirmDelete() {
+            Swal.fire({
+                title: 'Are you certain?',
+                text: "This will permanently strike this celluloid from the archive, including all ticket sales and showtimes. This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#b22222',
+                cancelButtonColor: '#8b7355',
+                confirmButtonText: 'Yes, Burn the Negative',
+                cancelButtonText: 'Keep in Archive',
+                background: '#F2E8D5',
+                color: '#0D0B0E'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.querySelector('form');
+                    const trigger = document.getElementById('deleteTrigger');
+                    trigger.name = 'delete_movie';
+                    trigger.value = '1';
+                    form.submit();
+                }
+            });
         }
     </script>
 </body>

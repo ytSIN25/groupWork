@@ -3,12 +3,23 @@ require_once 'config.php';
 
 // Check if user is logged in and is admin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    header('Location: index_login.php');
+    header('Location: index_login.php?force=1');
     exit();
 }
 
-// Fetch all movies
-$movies_query = "SELECT * FROM movies ORDER BY movie_id DESC";
+
+// Fetch movies owned by this admin
+$admin_id = $_SESSION['user_id'];
+
+// Fetch admin details (name and tier) for the profile display
+$user_query = "SELECT name, tier, avatar FROM users WHERE user_id = $admin_id";
+$user_result = $conn->query($user_query);
+$user_data = $user_result->fetch_assoc();
+$admin_name = $user_data['name'] ?? 'Admin';
+$admin_tier = $user_data['tier'] ?? 'Staff';
+$admin_avatar = $user_data['avatar'] ?? "https://api.dicebear.com/7.x/notionists/svg?seed=" . urlencode($admin_name);
+
+$movies_query = "SELECT * FROM movies WHERE user_id = $admin_id ORDER BY movie_id DESC";
 $movies_result = $conn->query($movies_query);
 $movies = [];
 if ($movies_result) {
@@ -17,18 +28,91 @@ if ($movies_result) {
     }
 }
 
-// Fetch all promotions
-$promos_result = $conn->query("SELECT * FROM promotions ORDER BY promotion_id DESC");
+// Fetch promotions owned by this admin
+$promos_result = $conn->query("SELECT * FROM promotions WHERE user_id = $admin_id ORDER BY promotion_id DESC");
 $promos = [];
 if ($promos_result) {
     while ($row = $promos_result->fetch_assoc()) {
         $promos[] = $row;
     }
 }
+
+// --- DYNAMIC REVENUE CALCULATION ---
+// Calculate daily revenue for the current week (Mon-Sun)
+$weekly_revenue = array_fill(0, 7, 0); // 0=Mon, 1=Tue, ..., 6=Sun
+$rev_query = "
+    SELECT 
+        WEEKDAY(o.order_date) as day_index, 
+        SUM(o.total_price) as daily_total
+    FROM orders o
+    JOIN showtimes s ON o.showtime_id = s.showtime_id
+    JOIN movies m ON s.movie_id = m.movie_id
+    WHERE m.user_id = $admin_id 
+    AND YEARWEEK(o.order_date, 1) = YEARWEEK(CURDATE(), 1)
+    GROUP BY day_index
+";
+$rev_result = $conn->query($rev_query);
+if ($rev_result) {
+    while ($row = $rev_result->fetch_assoc()) {
+        $weekly_revenue[(int)$row['day_index']] = (float)$row['daily_total'];
+    }
+}
+
+$max_rev = max($weekly_revenue) ?: 1;
+$total_week_revenue = array_sum($weekly_revenue);
+
+// --- REVENUE BY MOVIE BREAKDOWN ---
+$movie_labels = [];
+$movie_revenue = [];
+$movie_rev_query = "
+    SELECT 
+        m.movie_name, 
+        SUM(o.total_price) as movie_total
+    FROM orders o
+    JOIN showtimes s ON o.showtime_id = s.showtime_id
+    JOIN movies m ON s.movie_id = m.movie_id
+    WHERE m.user_id = $admin_id
+    GROUP BY m.movie_id
+";
+
+$movie_rev_result = $conn->query($movie_rev_query);
+if ($movie_rev_result) {
+    while ($row = $movie_rev_result->fetch_assoc()) {
+        $movie_labels[] = $row['movie_name'];
+        $movie_revenue[] = (float)$row['movie_total'];
+    }
+}
+
+// --- ALL-TIME STATISTICS ---
+// Total Gross Revenue (All Time for this Admin)
+$all_time_rev_query = "
+    SELECT SUM(o.total_price) as total_gross, SUM(o.num_seats) as total_admissions
+    FROM orders o
+    JOIN showtimes s ON o.showtime_id = s.showtime_id
+    JOIN movies m ON s.movie_id = m.movie_id
+    WHERE m.user_id = $admin_id
+";
+$all_time_res = $conn->query($all_time_rev_query);
+$all_time_data = $all_time_res->fetch_assoc();
+$total_gross_all_time = (float)($all_time_data['total_gross'] ?? 0);
+$total_admissions_all_time = (int)($all_time_data['total_admissions'] ?? 0);
+
+// --- ACTIVE CATALOG SIZE ---
+$catalog_query = "
+    SELECT COUNT(*) as movie_count 
+    FROM movies 
+    WHERE user_id = $admin_id 
+      AND (start_date IS NOT NULL AND start_date != '0000-00-00')
+      AND CURDATE() >= start_date 
+      AND CURDATE() <= DATE_ADD(start_date, INTERVAL 14 DAY)
+";
+$catalog_res = $conn->query($catalog_query);
+$catalog_data = $catalog_res->fetch_assoc();
+$active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -172,7 +256,7 @@ if ($promos_result) {
             filter: brightness(1.2);
         }
 
-        /* Tooltip to show the ¬RM value on hover */
+        /* Tooltip to show the ÔøΩRM value on hover */
         .bar::after {
             content: attr(data-value);
             position: absolute;
@@ -195,8 +279,6 @@ if ($promos_result) {
         .bar:hover::after {
             opacity: 1;
         }
-
-        /* ---------------------------------- */
 
         .admin-table-premium {
             width: 100%;
@@ -293,9 +375,6 @@ if ($promos_result) {
 </head>
 
 <body>
-  
-    
-    
     <div class="film-grain"></div>
     <div class="page-transition active" id="pageTransition"><span class="trans-logo">LUMI√àRE</span></div>
 
@@ -309,14 +388,17 @@ if ($promos_result) {
         </div>
         <div class="admin-profile" style="display:flex; align-items:center; gap:20px;">
             <div style="text-align:right;">
-                <p style="font-family:var(--font-display, serif); color:var(--cream, #fff); margin:0;">Arthur Pendelton
+                <p style="font-family:var(--font-display, serif); color:var(--cream, #fff); margin:0;">
+                    <?php echo htmlspecialchars($admin_name); ?>
                 </p>
-                <p
-                    style="font-family:var(--font-accent, sans-serif); color:var(--retro-red, #b22222); font-size:0.8rem; margin:0; text-transform:uppercase;">
-                    Chief Operator</p>
+                
+                <p style="font-family:var(--font-accent, sans-serif); color:var(--retro-red, #b22222); font-size:0.8rem; margin:0; text-transform:uppercase;">
+                    <?php echo htmlspecialchars($admin_tier); ?>
+                </p>
             </div>
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Arthur&backgroundColor=d4a853" alt="Admin"
+            <img src="<?php echo htmlspecialchars($admin_avatar); ?>" alt="Admin"
                 style="width:45px; height:45px; border-radius:50%; border:2px solid var(--retro-red, #b22222);">
+            <button onclick="API.logout()" style="background: none; border: 1px solid var(--retro-red); color: var(--retro-red); padding: 5px 12px; font-family: var(--font-accent); font-size: 0.75rem; border-radius: 4px; cursor: pointer; transition: all 0.3s; margin-left: 10px; letter-spacing: 0.1em;" onmouseover="this.style.background='var(--retro-red)'; this.style.color='white';" onmouseout="this.style.background='none'; this.style.color='var(--retro-red)';">LOGOUT</button>
         </div>
     </nav>
 
@@ -326,12 +408,10 @@ if ($promos_result) {
             <button class="admin-nav-btn active" onclick="switchAdmin(event, 'overview')">üìä Global Overview</button>
             <button class="admin-nav-btn" onclick="switchAdmin(event, 'catalog')">üéûÔ∏è Film Repertoire</button>
             <button class="admin-nav-btn" onclick="switchAdmin(event, 'promotions')">üè∑Ô∏è Promotions</button>
-            <button class="admin-nav-btn" onclick="switchAdmin(event, 'sales')">üéüÔ∏è Live Box Office</button>
             <button class="admin-nav-btn" onclick="switchAdmin(event, 'staff')">üë• Staff Directory</button>
 
             <div style="margin-top:auto; padding-top:20px; border-top:1px solid rgba(255,255,255,0.05);">
-                <a href="index.php" class="admin-nav-btn" style="color:var(--mocha, #8b7355);"><span
-                        style="font-size:1.2rem;">‚Üê</span> Exit to Front</a>
+                <a href="index.php" class="admin-nav-btn" style="color:var(--mocha, #8b7355);"><span style="font-size:1.2rem;">‚Üê</span> Exit to Front</a>
             </div>
         </aside>
 
@@ -339,71 +419,57 @@ if ($promos_result) {
             <div id="overview" class="tab-pane active">
                 <div class="section-header" style="text-align:left; margin-bottom:50px;">
                     <h1 style="font-style:italic; font-size:3rem; color: var(--cream, #fff);">Executive Summary</h1>
-                    <p style="color: var(--cream-dim, #e0d8c8);">Performance metrics for the current theatrical week.
-                    </p>
+                    <p style="color: var(--cream-dim, #e0d8c8);">Performance metrics for the current theatrical week.</p>
                 </div>
 
                 <div class="stats-grid"
                     style="display:grid; grid-template-columns:repeat(3, 1fr); gap:30px; margin-bottom:60px;">
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Total Gross Revenue</span>
-                        <div class="stat-value-admin">¬RM18,240</div>
-                        <div class="performance-bar-container">
-                            <div class="performance-bar-fill" style="width:85%;"></div>
-                        </div>
-                        <p style="margin-top:10px; font-size:0.8rem; color:var(--retro-mint, #88c0d0);">‚Üë 12% from last
-                            week</p>
+                        <div class="stat-value-admin">RM<?php echo number_format($total_gross_all_time, 0); ?></div>
+                        <p style="margin-top:10px; font-size:0.8rem; color:var(--retro-mint, #88c0d0);">Lifetime Performance</p>
                     </div>
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Admissions Scanned</span>
-                        <div class="stat-value-admin">1,402</div>
-                        <div class="performance-bar-container">
-                            <div class="performance-bar-fill" style="width:72%;"></div>
-                        </div>
-                        <p style="margin-top:10px; font-size:0.8rem; color:var(--mocha, #8b7355);">Total active patrons
-                        </p>
+                        <div class="stat-value-admin"><?php echo number_format($total_admissions_all_time); ?></div>
+                        <p style="margin-top:10px; font-size:0.8rem; color:var(--gold, #d4a853);">Patronage to date</p>
                     </div>
                     <div class="stat-card-premium">
-                        <span class="stat-label-admin">House Capacity</span>
-                        <div class="stat-value-admin">94%</div>
-                        <div class="performance-bar-container">
-                            <div class="performance-bar-fill" style="width:94%;"></div>
-                        </div>
-                        <p style="margin-top:10px; font-size:0.8rem; color:var(--sunset-coral, #e8735a);">Near capacity
-                            alert</p>
+                        <span class="stat-label-admin">Active Catalog Size</span>
+                        <div class="stat-value-admin"><?php echo $active_catalog_size; ?></div>
+                        <p style="margin-top:10px; font-size:0.8rem; color:var(--sunset-coral, #e8735a);">Films in repertoire</p>
                     </div>
                 </div>
 
                 <h2 style="margin-bottom:30px; color: var(--cream, #fff);">House Performance</h2>
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                <div style="display: flex; flex-direction: column; gap: 30px;">
                     <div class="vintage-card"
-                        style="padding:40px; background: var(--bg-card, #1a1520); border: 1px solid rgba(212,168,83,0.15); border-radius: 8px;">
-                        <h3 style="color:var(--cream); margin-bottom:15px; font-family:var(--font-accent); border-bottom:1px dashed rgba(212,168,83,0.15); padding-bottom:8px;">Weekly Revenue</h3>
+                        style="padding:40px; background: var(--bg-card, #1a1520); border: 1px solid rgba(212, 168, 83, 0.15); border-radius: 8px;">
+                        <h3 style="color:var(--cream); margin-bottom:15px; font-family:var(--font-accent); border-bottom:1px dashed rgba(212, 168, 83, 0.15); padding-bottom:8px;">Weekly Revenue</h3>
                         <div class="chart-container" style="background:none; border:none; padding:0;">
                             <div class="bar-chart" style="height:250px;">
-                                <div class="bar" style="height: 40%; background:var(--gold, #d4a853);" data-value="¬RM1,200"></div>
-                                <div class="bar" style="height: 65%; background:var(--gold, #d4a853);" data-value="¬RM1,800"></div>
-                                <div class="bar" style="height: 55%; background:var(--gold, #d4a853);" data-value="¬RM1,500"></div>
-                                <div class="bar" style="height: 85%; background:var(--retro-red, #b22222);" data-value="¬RM2,400"></div>
-                                <div class="bar" style="height: 100%; background:var(--retro-red, #b22222);" data-value="¬RM3,000"></div>
-                                <div class="bar" style="height: 95%; background:var(--retro-red, #b22222);" data-value="¬RM2,700"></div>
-                                <div class="bar" style="height: 75%; background:var(--gold, #d4a853);" data-value="¬RM2,100"></div>
+                                <?php 
+                                $days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+                                foreach ($weekly_revenue as $idx => $rev): 
+                                    $height = ($rev / $max_rev) * 100;
+                                    $color = ($idx >= 3 && $idx <= 5) ? 'var(--retro-red, #b22222)' : 'var(--gold, #d4a853)';
+                                ?>
+                                    <div class="bar" style="height: <?php echo $height; ?>%; background: <?php echo $color; ?>;" data-value="RM<?php echo number_format($rev, 0); ?>"></div>
+                                <?php endforeach; ?>
                             </div>
-                            <div
-                                style="display:flex; justify-content:space-around; margin-top:10px; font-family:var(--font-accent, sans-serif); color:var(--mocha, #8b7355); font-size: 0.85rem;">
-                                <span style="width: 45px; text-align: center;">MON</span>
-                                <span style="width: 45px; text-align: center;">TUE</span>
-                                <span style="width: 45px; text-align: center;">WED</span>
-                                <span style="width: 45px; text-align: center;">THU</span>
-                                <span style="width: 45px; text-align: center;">FRI</span>
-                                <span style="width: 45px; text-align: center;">SAT</span>
-                                <span style="width: 45px; text-align: center;">SUN</span>
+                            <div style="display:flex; justify-content:space-around; margin-top:10px; font-family:var(--font-accent, sans-serif); color:var(--mocha, #8b7355); font-size: 0.85rem;">
+                                <?php foreach ($days as $day): ?>
+                                    <span style="width: 45px; text-align: center;"><?php echo $day; ?></span>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
-                    <div class="vintage-card" style="padding:40px; background: var(--bg-card, #1a1520); border: 1px solid rgba(212,168,83,0.15); border-radius: 8px;">
-                        <h3 style="color:var(--cream); margin-bottom:15px; font-family:var(--font-accent); border-bottom:1px dashed rgba(212,168,83,0.15); padding-bottom:8px;">Tier Breakdown</h3>
-                        <canvas id="doughnutChart" height="200"></canvas>
+
+                    <div class="vintage-card" style="padding:40px; background: var(--bg-card, #1a1520); border: 1px solid rgba(212, 168, 83, 0.15); border-radius: 8px;">
+                        <h3 style="color:var(--cream); margin-bottom:15px; font-family:var(--font-accent); border-bottom:1px dashed rgba(212, 168, 83, 0.15); padding-bottom:8px;">Revenue Breakdown by Production</h3>
+                        <div style="max-width: 500px; margin: 0 auto;">
+                            <canvas id="movieRevenueChart" height="200"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -412,19 +478,22 @@ if ($promos_result) {
                         <h3 style="color:var(--cream, #fff); font-size:1.4rem;">Current Programme</h3>
                         <button class="btn-primary" style="padding:6px 18px; font-size:0.85rem; background:none; border:1px solid var(--gold); color:var(--gold); border-radius:4px; cursor:pointer;" onclick="switchAdmin(event, 'catalog')">Manage</button>
                     </div>
-                    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
+
+                    <div style="display:flex; gap:20px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: thin; scrollbar-color: var(--gold) transparent;">
                         <?php if (empty($movies)): ?>
-                            <p style="color: var(--mocha); grid-column: span 4; text-align: center; padding: 40px;">No movies in repertoire.</p>
+                            <p style="color: var(--mocha); width: 100%; text-align: center; padding: 40px;">No movies in repertoire.</p>
                         <?php else: ?>
-                            <?php foreach (array_slice($movies, 0, 4) as $m): ?>
-                                <div style="border:1px solid rgba(212,168,83,0.1); border-radius:6px; overflow:hidden; cursor:pointer; transition:border-color 0.3s;" onmouseenter="this.style.borderColor='var(--sunset-coral)'" onmouseleave="this.style.borderColor='rgba(212,168,83,0.1)'">
+                            <?php foreach ($movies as $m): ?>
+                                <div style="flex: 0 0 200px; border:1px solid rgba(212,168,83,0.1); border-radius:6px; overflow:hidden; cursor:pointer; transition:border-color 0.3s;" onmouseenter="this.style.borderColor='var(--sunset-coral)'" onmouseleave="this.style.borderColor='rgba(212,168,83,0.1)'" onclick="window.location.href='admin_edit_movie.php?id=<?php echo $m['movie_id']; ?>'">
                                     <img src="<?php echo htmlspecialchars($m['poster_path']); ?>" style="width:100%; aspect-ratio:3/4; object-fit:cover; filter:saturate(0.9);" alt="">
-                                    <div style="padding:12px; text-align:center; color:var(--gold); font-family:var(--font-accent); text-transform:uppercase; letter-spacing:0.1em; font-size:0.95rem;">
+
+                                    <div style="padding:12px; text-align:center; color:var(--gold); font-family:var(--font-accent); text-transform:uppercase; letter-spacing:0.1em; font-size:0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         <?php echo htmlspecialchars($m['movie_name']); ?>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
+
                     </div>
                 </div>
             </div>
@@ -432,6 +501,7 @@ if ($promos_result) {
             <div id="catalog" class="tab-pane">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
                     <h1 style="font-style:italic; color: var(--cream, #fff);">Film Repertoire</h1>
+
                     <button class="btn-coral"
                         style="padding:10px 25px; background: var(--sunset-coral, #e8735a); color: #fff; border: none; border-radius: 4px; cursor: pointer;"
                         onclick="window.location.href='admin_add_movie.php'">
@@ -449,9 +519,12 @@ if ($promos_result) {
                             <th style="text-align:right;">Control</th>
                         </tr>
                     </thead>
+
                     <tbody id="movieTableBody">
                         <?php if (empty($movies)): ?>
-                            <tr><td colspan="5" style="text-align: center; color: var(--mocha); padding: 40px;">Archive empty. Propose a new screening to begin.</td></tr>
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--mocha); padding: 40px;">Archive empty. Propose a new screening to begin.</td>
+                            </tr>
                         <?php else: ?>
                             <?php foreach ($movies as $m): ?>
                                 <tr class="data-row">
@@ -460,10 +533,7 @@ if ($promos_result) {
                                     <td style="color: var(--cream-dim, #e0d8c8);"><?php echo $m['release_year']; ?></td>
                                     <td>
                                         <?php
-                                        // Use 'today' to strip the time component (H:i:s) for accurate date-only comparison
                                         $today = new DateTime('today');
-                                        
-                                        // Ensure we have a valid date; if it's empty or '0000-00-00', fallback to epoch
                                         $raw_start = (!empty($m['start_date']) && $m['start_date'] !== '0000-00-00') ? $m['start_date'] : '1970-01-01';
                                         $start = new DateTime($raw_start);
                                         $start->setTime(0, 0);
@@ -480,7 +550,7 @@ if ($promos_result) {
                                         }
                                         ?>
                                     </td>
-                                    <td style="color:var(--gold, #d4a853);">¬RM<?php echo number_format($m['price'], 2); ?></td>
+                                    <td style="color:var(--gold, #d4a853);">RM<?php echo number_format($m['price'], 2); ?></td>
                                     <td style="text-align:right;">
                                         <button class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem; background: var(--gold); color: var(--bg-deep); border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="window.location.href='admin_edit_movie.php?id=<?php echo $m['movie_id']; ?>'">
                                             Edit
@@ -496,9 +566,7 @@ if ($promos_result) {
             <div id="promotions" class="tab-pane">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
                     <h1 style="font-style:italic; color: var(--cream, #fff);">Promotion Ledgers</h1>
-                    <button class="btn-coral"
-                        style="padding:10px 25px; background: var(--sunset-coral, #e8735a); color: #fff; border: none; border-radius: 4px; cursor: pointer;"
-                        onclick="window.location.href='admin_set_promotion.php'">
+                    <button class="btn-coral" style="padding:10px 25px; background: var(--sunset-coral, #e8735a); color: #fff; border: none; border-radius: 4px; cursor: pointer;" onclick="window.location.href='admin_set_promotion.php'">
                         + Mint New Coupon
                     </button>
                 </div>
@@ -514,6 +582,7 @@ if ($promos_result) {
                             <th style="text-align:right;">Control</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <?php if (empty($promos)): ?>
                             <tr><td colspan="6" style="text-align: center; color: var(--mocha); padding: 40px;">No active promotions.</td></tr>
@@ -531,10 +600,10 @@ if ($promos_result) {
                                         <div style="color: var(--cream, #fff); font-weight: 600;"><?php echo htmlspecialchars($p['description']); ?></div>
                                     </td>
                                     <td style="font-family: monospace; letter-spacing: 0.1em; color: var(--gold);"><?php echo htmlspecialchars($p['promo_code']); ?></td>
-                                    <td style="color: var(--cream-dim);">-¬RM<?php echo number_format($p['discount_value'], 2); ?></td>
-                                    <td style="color: var(--mocha);">¬RM<?php echo number_format($p['minimum_spend'], 2); ?></td>
+                                    <td style="color: var(--cream-dim);">-RM<?php echo number_format($p['discount_value'], 2); ?></td>
+                                    <td style="color: var(--mocha);">RM<?php echo number_format($p['minimum_spend'], 2); ?></td>
                                     <td style="text-align:right;">
-                                        <button class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem; background: var(--gold); color: var(--bg-deep); border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="window.location.href='admin_set_promotion.php'">
+                                        <button class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem; background: var(--gold); color: var(--bg-deep); border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="window.location.href='admin_set_promotion.php?id=<?php echo $p['promotion_id']; ?>'">
                                             Manage
                                         </button>
                                     </td>
@@ -545,42 +614,23 @@ if ($promos_result) {
                 </table>
             </div>
 
-            <div id="sales" class="tab-pane">
-                <h1 style="font-style:italic; color: var(--cream, #fff);">Live Box Office</h1>
-                <div class="vintage-card"
-                    style="text-align:center; padding:80px; background: var(--bg-card, #1a1520); border: 1px solid rgba(212,168,83,0.15); border-radius: 8px;">
-                    <p style="font-size:1.5rem; margin-bottom:30px; color: var(--cream-dim, #e0d8c8);">Accessing
-                        real-time spectral projection data...</p>
-                    <a href="admin_seat_sales.php" class="btn-coral"
-                        style="display: inline-block; padding: 15px 30px; background: var(--sunset-coral, #e8735a); color: #fff; text-decoration: none; border-radius: 4px;">Launch
-                        Live Viewport</a>
-                </div>
-            </div>
-
             <div id="staff" class="tab-pane">
-                <h1 style="font-style:italic; margin-bottom:40px; color: var(--cream, #fff);">Directorate & Operations
-                </h1>
+                <h1 style="font-style:italic; margin-bottom:40px; color: var(--cream, #fff);">Directorate & Operations </h1>
+
                 <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:30px;">
                     <div class="stat-card-premium" style="display:flex; align-items:center; gap:20px;">
-                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Arthur"
-                            style="width:60px; height:60px; border-radius:50%; background:var(--gold, #d4a853);">
+                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Arthur" style="width:60px; height:60px; border-radius:50%; background:var(--gold, #d4a853);">
                         <div>
-                            <h4 style="margin:0; font-family:var(--font-display, serif); color: var(--cream, #fff);">
-                                Arthur Pendelton</h4>
-                            <p
-                                style="margin:0; color:var(--retro-red, #b22222); text-transform:uppercase; font-size:0.75rem;">
-                                Chief Operator</p>
+                            <h4 style="margin:0; font-family:var(--font-display, serif); color: var(--cream, #fff);"> Arthur Pendelton </h4>
+
+                            <p style="margin:0; color:var(--retro-red, #b22222); text-transform:uppercase; font-size:0.75rem;"> Chief Operator </p>
                         </div>
                     </div>
                     <div class="stat-card-premium" style="display:flex; align-items:center; gap:20px;">
-                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Sarah"
-                            style="width:60px; height:60px; border-radius:50%; background:var(--retro-mint, #88c0d0);">
+                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Sarah" style="width:60px; height:60px; border-radius:50%; background:var(--retro-mint, #88c0d0);">
                         <div>
-                            <h4 style="margin:0; font-family:var(--font-display, serif); color: var(--cream, #fff);">
-                                Sarah Jenkins</h4>
-                            <p
-                                style="margin:0; color:var(--retro-mint, #88c0d0); text-transform:uppercase; font-size:0.75rem;">
-                                Lobby Bar Manager</p>
+                            <h4 style="margin:0; font-family:var(--font-display, serif); color: var(--cream, #fff);"> Sarah Jenkins </h4>
+                            <p style="margin:0; color:var(--retro-mint, #88c0d0); text-transform:uppercase; font-size:0.75rem;"> Lobby Bar Manager </p>
                         </div>
                     </div>
                 </div>
@@ -592,6 +642,7 @@ if ($promos_result) {
     <script>
         function switchAdmin(event, tabId) {
             if (event) event.preventDefault();
+
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.admin-nav-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
@@ -599,8 +650,44 @@ if ($promos_result) {
         }
 
         // Chart.js init
-        Chart.defaults.color='#9A8B7A'; Chart.defaults.font.family="'EB Garamond', serif";
-        new Chart(document.getElementById('doughnutChart'),{type:'doughnut',data:{labels:['Stalls','Circle','Box'],datasets:[{data:[55,30,15],backgroundColor:['#D4A853','#E8735A','#8B6FA3'],borderColor:'#1A1520',borderWidth:3,hoverOffset:6}]},options:{responsive:true,plugins:{legend:{position:'bottom'}},cutout:'65%'}});
+        Chart.defaults.color='#9A8B7A'; 
+        Chart.defaults.font.family="'EB Garamond', serif";
+        
+        const movieLabels = <?php echo json_encode($movie_labels); ?>;
+        const movieData = <?php echo json_encode($movie_revenue); ?>;
+        
+        new Chart(document.getElementById('movieRevenueChart'), {
+            type: 'doughnut',
+            data: {
+                labels: movieLabels,
+                datasets: [{
+                    data: movieData,
+                    backgroundColor: ['#D4A853', '#E8735A', '#8B6FA3', '#88C0D0', '#B22222', '#E0D8C8'],
+                    borderColor: '#1A1520',
+                    borderWidth: 3,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed !== null) {
+                                    label += new Intl.NumberFormat('en-MY', { style: 'currency', currency: 'MYR' }).format(context.parsed);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                cutout: '65%'
+            }
+        });
     </script>
 </body>
 

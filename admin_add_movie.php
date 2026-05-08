@@ -158,7 +158,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div style="display: flex; gap: 30px;">
                         <div class="form-group" style="flex: 1;">
                             <label style="color: var(--bg-deep); font-weight: 600;">Genre</label>
-                            <input type="text" name="genre" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" placeholder="Drama, Sci-Fi, etc.">
+                            <select name="genre" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha); width: 100%; cursor: pointer;">
+                                <option value="" disabled selected>Select Genre</option>
+                                <option value="Action">Action</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="Comedy">Comedy</option>
+                                <option value="Crime">Crime</option>
+                                <option value="Drama">Drama</option>
+                                <option value="Fantasy">Fantasy</option>
+                                <option value="Historical">Historical</option>
+                                <option value="Horror">Horror</option>
+                                <option value="Musical">Musical</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Sci-Fi">Sci-Fi</option>
+                                <option value="Thriller">Thriller</option>
+                            </select>
                         </div>
                         <div class="form-group" style="flex: 1;">
                             <label style="color: var(--bg-deep); font-weight: 600;">Duration (min)</label>
@@ -182,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="date" name="start_date" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" required>
                         </div>
                         <div class="form-group" style="flex: 1;">
-                            <label style="color: var(--bg-deep); font-weight: 600;">Base Price (ÂRM)</label>
+                            <label style="color: var(--bg-deep); font-weight: 600;">Base Price (RM)</label>
                             <input type="number" name="price" step="0.01" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" placeholder="12.00">
                         </div>
                     </div>

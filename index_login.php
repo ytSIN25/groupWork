@@ -1,8 +1,8 @@
 <?php
-// If user is already logged in, redirect to the right dashboard
 require_once 'config.php';
 
-if (isset($_SESSION['user_id'])) {
+// Only auto-redirect if the 'force' flag is NOT set
+if (isset($_SESSION['user_id']) && !isset($_GET['force'])) {
     if ($_SESSION['user_role'] === 'admin') {
         header('Location: dashboard_admin.php');
     } else {
@@ -10,6 +10,7 @@ if (isset($_SESSION['user_id'])) {
     }
     exit;
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

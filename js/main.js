@@ -88,13 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 600);
     };
 
-    const safetyTimeout = setTimeout(removeTransition, 2000);
+    const safetyTimeout = setTimeout(removeTransition, 2500);
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        clearTimeout(safetyTimeout);
-        removeTransition();
-      });
+    window.addEventListener('load', () => {
+      clearTimeout(safetyTimeout);
+      removeTransition();
     });
   }
 });

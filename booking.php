@@ -1,3 +1,10 @@
+<?php
+require_once 'config.php';
+if (!isset($_SESSION['user_id'])) {
+    header('Location: index_login.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,8 +52,8 @@
       <div id="step2" class="step-content">
         <h2 style="margin-bottom:20px;">Patron Details</h2>
         <form onsubmit="event.preventDefault(); nextStep(3);">
-          <div class="form-group"><label>Name</label><input type="text" value="Arthur Shelby" required></div>
-          <div class="form-group"><label>Email</label><input type="email" value="arthur@example.com" required></div>
+          <div class="form-group"><label>Name</label><input type="text" value="<?php echo htmlspecialchars($user['name'] ?? ''); ?>" required></div>
+          <div class="form-group"><label>Email</label><input type="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required></div>
           <button class="btn-primary" style="width:100%; margin-top:10px;" type="button" onclick="nextStep(1)">Back</button>
           <button class="btn-coral" style="width:100%; margin-top:10px;" type="submit">Continue to Payment</button>
         </form>
