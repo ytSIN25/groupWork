@@ -1,3 +1,22 @@
+<?php
+require_once 'config.php';
+
+// Check if user is logged in and is admin
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    header('Location: index_login.php');
+    exit();
+}
+
+// Fetch all movies
+$movies_query = "SELECT * FROM movies ORDER BY movie_id DESC";
+$movies_result = $conn->query($movies_query);
+$movies = [];
+if ($movies_result) {
+    while ($row = $movies_result->fetch_assoc()) {
+        $movies[] = $row;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -378,14 +397,18 @@
                         <button class="btn-primary" style="padding:6px 18px; font-size:0.85rem; background:none; border:1px solid var(--gold); color:var(--gold); border-radius:4px; cursor:pointer;" onclick="switchAdmin(event, 'catalog')">Manage</button>
                     </div>
                     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
-                        <div style="border:1px solid rgba(212,168,83,0.1); border-radius:6px; overflow:hidden; cursor:pointer; transition:border-color 0.3s;" onmouseenter="this.style.borderColor='var(--sunset-coral)'" onmouseleave="this.style.borderColor='rgba(212,168,83,0.1)'">
-                        <img src="assets/images/poster-oppenheimer.png" style="width:100%; aspect-ratio:3/4; object-fit:cover; filter:saturate(0.9);" alt=""><div style="padding:12px; text-align:center; color:var(--gold); font-family:var(--font-accent); text-transform:uppercase; letter-spacing:0.1em; font-size:0.95rem;">Oppenheimer</div></div>
-                        <div style="border:1px solid rgba(212,168,83,0.1); border-radius:6px; overflow:hidden; cursor:pointer; transition:border-color 0.3s;" onmouseenter="this.style.borderColor='var(--sunset-coral)'" onmouseleave="this.style.borderColor='rgba(212,168,83,0.1)'">
-                        <img src="assets/images/poster-dune.png" style="width:100%; aspect-ratio:3/4; object-fit:cover; filter:saturate(0.9);" alt=""><div style="padding:12px; text-align:center; color:var(--gold); font-family:var(--font-accent); text-transform:uppercase; letter-spacing:0.1em; font-size:0.95rem;">Dune: Part Two</div></div>
-                        <div style="border:1px solid rgba(212,168,83,0.1); border-radius:6px; overflow:hidden; cursor:pointer; transition:border-color 0.3s;" onmouseenter="this.style.borderColor='var(--sunset-coral)'" onmouseleave="this.style.borderColor='rgba(212,168,83,0.1)'">
-                        <img src="assets/images/poster-nosferatu.png" style="width:100%; aspect-ratio:3/4; object-fit:cover; filter:saturate(0.9);" alt=""><div style="padding:12px; text-align:center; color:var(--gold); font-family:var(--font-accent); text-transform:uppercase; letter-spacing:0.1em; font-size:0.95rem;">Nosferatu</div></div>
-                        <div style="border:1px solid rgba(212,168,83,0.1); border-radius:6px; overflow:hidden; cursor:pointer; transition:border-color 0.3s;" onmouseenter="this.style.borderColor='var(--sunset-coral)'" onmouseleave="this.style.borderColor='rgba(212,168,83,0.1)'">
-                        <img src="assets/images/poster-interstellar.png" style="width:100%; aspect-ratio:3/4; object-fit:cover; filter:saturate(0.9);" alt=""><div style="padding:12px; text-align:center; color:var(--gold); font-family:var(--font-accent); text-transform:uppercase; letter-spacing:0.1em; font-size:0.95rem;">Interstellar</div></div>
+                        <?php if (empty($movies)): ?>
+                            <p style="color: var(--mocha); grid-column: span 4; text-align: center; padding: 40px;">No movies in repertoire.</p>
+                        <?php else: ?>
+                            <?php foreach (array_slice($movies, 0, 4) as $m): ?>
+                                <div style="border:1px solid rgba(212,168,83,0.1); border-radius:6px; overflow:hidden; cursor:pointer; transition:border-color 0.3s;" onmouseenter="this.style.borderColor='var(--sunset-coral)'" onmouseleave="this.style.borderColor='rgba(212,168,83,0.1)'">
+                                    <img src="<?php echo htmlspecialchars($m['poster_path']); ?>" style="width:100%; aspect-ratio:3/4; object-fit:cover; filter:saturate(0.9);" alt="">
+                                    <div style="padding:12px; text-align:center; color:var(--gold); font-family:var(--font-accent); text-transform:uppercase; letter-spacing:0.1em; font-size:0.95rem;">
+                                        <?php echo htmlspecialchars($m['movie_name']); ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -394,8 +417,10 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
                     <h1 style="font-style:italic; color: var(--cream, #fff);">Film Repertoire</h1>
                     <button class="btn-coral"
-                        style="padding:10px 25px; background: var(--sunset-coral, #e8735a); color: #fff; border: none; border-radius: 4px; cursor: pointer;">+
-                        Propose New Screening</button>
+                        style="padding:10px 25px; background: var(--sunset-coral, #e8735a); color: #fff; border: none; border-radius: 4px; cursor: pointer;"
+                        onclick="window.location.href='admin_add_movie.php'">
+                        + Propose New Screening
+                    </button>
                 </div>
 
                 <table class="admin-table-premium">
@@ -409,39 +434,24 @@
                         </tr>
                     </thead>
                     <tbody id="movieTableBody">
-                        <tr class="data-row">
-                            <td><strong
-                                    style="font-family:var(--font-display, serif); color:var(--cream, #fff); font-size:1.2rem;">Blade
-                                    Runner 2049</strong></td>
-                            <td style="color: var(--cream-dim, #e0d8c8);">2017</td>
-                            <td><span class="status-badge status-live">Live Engagement</span></td>
-                            <td style="color:var(--gold, #d4a853);">£15.00</td>
-                            <td style="text-align:right;"><button
-                                    style="background:none; border:none; color:var(--retro-red, #b22222); cursor:pointer;">Withdraw</button>
-                            </td>
-                        </tr>
-                        <tr class="data-row">
-                            <td><strong
-                                    style="font-family:var(--font-display, serif); color:var(--cream, #fff); font-size:1.2rem;">Oppenheimer</strong>
-                            </td>
-                            <td style="color: var(--cream-dim, #e0d8c8);">2023</td>
-                            <td><span class="status-badge status-live">Live Engagement</span></td>
-                            <td style="color:var(--gold, #d4a853);">£12.00</td>
-                            <td style="text-align:right;"><button
-                                    style="background:none; border:none; color:var(--retro-red, #b22222); cursor:pointer;">Withdraw</button>
-                            </td>
-                        </tr>
-                        <tr class="data-row">
-                            <td><strong
-                                    style="font-family:var(--font-display, serif); color:var(--cream, #fff); font-size:1.2rem;">Nosferatu</strong>
-                            </td>
-                            <td style="color: var(--cream-dim, #e0d8c8);">2024</td>
-                            <td><span class="status-badge status-planned">Upcoming Premier</span></td>
-                            <td style="color:var(--gold, #d4a853);">£12.00</td>
-                            <td style="text-align:right;"><button
-                                    style="background:none; border:none; color:var(--mocha, #8b7355); cursor:pointer;">Edit
-                                    Schedule</button></td>
-                        </tr>
+                        <?php if (empty($movies)): ?>
+                            <tr><td colspan="5" style="text-align: center; color: var(--mocha); padding: 40px;">Archive empty. Propose a new screening to begin.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($movies as $m): ?>
+                                <tr class="data-row">
+                                    <td><strong style="font-family:var(--font-display, serif); color:var(--cream, #fff); font-size:1.2rem;">
+                                        <?php echo htmlspecialchars($m['movie_name']); ?></strong></td>
+                                    <td style="color: var(--cream-dim, #e0d8c8);"><?php echo $m['release_year']; ?></td>
+                                    <td><span class="status-badge status-live">Live Engagement</span></td>
+                                    <td style="color:var(--gold, #d4a853);">£<?php echo number_format($m['price'], 2); ?></td>
+                                    <td style="text-align:right;">
+                                        <button class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem; background: var(--gold); color: var(--bg-deep); border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="window.location.href='admin_edit_movie.php?id=<?php echo $m['movie_id']; ?>'">
+                                            Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -491,46 +501,6 @@
 
     <script src="js/main.js?v=5"></script>
     <script>
-        // Check Session
-        const currentAdmin = API.getCurrentUser();
-        if(!currentAdmin || currentAdmin.role !== 'admin') {
-            window.location.href = 'index_login.php';
-        }
-
-        async function initAdmin() {
-            const movies = await API.getMovies();
-            renderMovies(movies);
-        }
-
-        function renderMovies(movies) {
-            const tbody = document.getElementById('movieTableBody');
-            tbody.innerHTML = '';
-            movies.forEach(m => {
-                const tr = document.createElement('tr');
-                tr.className = 'data-row';
-                tr.innerHTML = `
-                    <td><strong style="font-family:var(--font-display, serif); color:var(--cream, #fff); font-size:1.2rem;">${m.title}</strong></td>
-                    <td style="color: var(--cream-dim, #e0d8c8);">${m.year}</td>
-                    <td><span class="status-badge ${m.status === 'live' ? 'status-live' : 'status-planned'}">${m.status === 'live' ? 'Live Engagement' : 'Upcoming Premier'}</span></td>
-                    <td style="color:var(--gold, #d4a853);">£${m.price.toFixed(2)}</td>
-                    <td style="text-align:right;">
-                        <button class="btn-withdraw" data-id="${m.id}" style="background:none; border:none; color:var(--retro-red, #b22222); cursor:pointer;">Withdraw</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        document.addEventListener('click', async e => {
-            if(e.target.classList.contains('btn-withdraw')) {
-                const id = e.target.dataset.id;
-                let movies = await API.getMovies();
-                movies = movies.filter(m => m.id !== id);
-                API.updateMovies(movies);
-                renderMovies(movies);
-            }
-        });
-
         function switchAdmin(event, tabId) {
             if (event) event.preventDefault();
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
@@ -538,8 +508,6 @@
             document.getElementById(tabId).classList.add('active');
             if (event) event.currentTarget.classList.add('active');
         }
-
-        initAdmin();
 
         // Chart.js init
         Chart.defaults.color='#9A8B7A'; Chart.defaults.font.family="'EB Garamond', serif";
