@@ -58,7 +58,7 @@
           <div class="movie-info">
             <h3 class="movie-title">Oppenheimer</h3>
             <p class="movie-meta">2023 · Drama/Thriller · 3h 0m</p>
-            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From £12</p>
+            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From �RM12</p>
           </div>
         </div>
 
@@ -67,7 +67,7 @@
           <div class="movie-info">
             <h3 class="movie-title">Grand Budapest Hotel</h3>
             <p class="movie-meta">2014 · Comedy/Drama · 1h 39m</p>
-            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From £12</p>
+            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From �RM12</p>
           </div>
         </div>
 
@@ -76,7 +76,7 @@
           <div class="movie-info">
             <h3 class="movie-title">Nosferatu</h3>
             <p class="movie-meta">2024 · Horror/Gothic · 2h 12m</p>
-            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From £12</p>
+            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From �RM12</p>
           </div>
         </div>
 
@@ -85,7 +85,7 @@
           <div class="movie-info">
             <h3 class="movie-title">Blade Runner 2049</h3>
             <p class="movie-meta">2017 · Sci-Fi/Thriller · 2h 44m</p>
-            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From £15</p>
+            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From �RM15</p>
           </div>
         </div>
 
@@ -94,7 +94,7 @@
           <div class="movie-info">
             <h3 class="movie-title">Interstellar</h3>
             <p class="movie-meta">2014 · Sci-Fi/Drama · 2h 49m</p>
-            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From £12</p>
+            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From �RM12</p>
           </div>
         </div>
 
@@ -103,7 +103,7 @@
           <div class="movie-info">
             <h3 class="movie-title">Dune: Part Two</h3>
             <p class="movie-meta">2024 · Sci-Fi/Adventure · 2h 46m</p>
-            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From £15</p>
+            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From �RM15</p>
           </div>
         </div>
 
@@ -112,7 +112,7 @@
           <div class="movie-info">
             <h3 class="movie-title">The Godfather</h3>
             <p class="movie-meta">1972 · Crime/Drama · 2h 55m</p>
-            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From £12</p>
+            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From �RM12</p>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
           <div class="movie-info">
             <h3 class="movie-title">2001: A Space Odyssey</h3>
             <p class="movie-meta">1968 · Sci-Fi/Adventure · 2h 29m</p>
-            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From £12</p>
+            <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From �RM12</p>
           </div>
         </div>
       </div>

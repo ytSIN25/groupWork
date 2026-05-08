@@ -16,6 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Basic validation
     if (!isset($_POST['title']) || empty($_POST['title'])) {
         $message = "Error: Movie title is required.";
+    } elseif (empty($_POST['start_date'])) {
+        $message = "Error: Start date is required.";
+    } elseif (empty($_POST['time_slots'])) {
+        $message = "Error: At least one time slot is required.";
     } else {
         $organiser_id = $_SESSION['user_id'];
         $title        = $_POST['title'];
@@ -49,11 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert Movie
-        $stmt = $conn->prepare("INSERT INTO movies (movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO movies (movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, price, start_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         // Bind parameters
         if ($stmt) {
-            $stmt->bind_param("sissssssid", $title, $organiser_id, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $price);
+            $stmt->bind_param("sissssssids", $title, $organiser_id, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $price, $start_date);
 
             // Execute and get last inserted id
             if ($stmt->execute()) {
@@ -175,10 +179,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div style="display: flex; gap: 30px;">
                         <div class="form-group" style="flex: 1;">
                             <label style="color: var(--bg-deep); font-weight: 600;">Start Date</label>
-                            <input type="date" name="start_date" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);">
+                            <input type="date" name="start_date" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" required>
                         </div>
                         <div class="form-group" style="flex: 1;">
-                            <label style="color: var(--bg-deep); font-weight: 600;">Base Price (Â£)</label>
+                            <label style="color: var(--bg-deep); font-weight: 600;">Base Price (ÂRM)</label>
                             <input type="number" name="price" step="0.01" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" placeholder="12.00">
                         </div>
                     </div>
@@ -190,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="form-group" style="flex: 1;">
                             <label style="color: var(--bg-deep); font-weight: 600;">Time Slots</label>
-                            <input type="text" name="time_slots" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" placeholder="14:00, 17:30, 20:00">
+                            <input type="text" name="time_slots" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" placeholder="14:00, 17:30, 20:00" required>
                         </div>
                     </div>
 

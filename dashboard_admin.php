@@ -16,6 +16,15 @@ if ($movies_result) {
         $movies[] = $row;
     }
 }
+
+// Fetch all promotions
+$promos_result = $conn->query("SELECT * FROM promotions ORDER BY promotion_id DESC");
+$promos = [];
+if ($promos_result) {
+    while ($row = $promos_result->fetch_assoc()) {
+        $promos[] = $row;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -163,7 +172,7 @@ if ($movies_result) {
             filter: brightness(1.2);
         }
 
-        /* Tooltip to show the ¬£ value on hover */
+        /* Tooltip to show the ¬RM value on hover */
         .bar::after {
             content: attr(data-value);
             position: absolute;
@@ -254,6 +263,12 @@ if ($movies_result) {
             border: 1px solid rgba(212, 168, 83, 0.2);
         }
 
+        .status-down {
+            background: rgba(128, 128, 128, 0.1);
+            color: #888;
+            border: 1px solid rgba(128, 128, 128, 0.3);
+        }
+
         .tab-pane {
             display: none;
             animation: slideInUp 0.6s ease forwards;
@@ -310,6 +325,7 @@ if ($movies_result) {
             <h2>Theatre Control</h2>
             <button class="admin-nav-btn active" onclick="switchAdmin(event, 'overview')">üìä Global Overview</button>
             <button class="admin-nav-btn" onclick="switchAdmin(event, 'catalog')">üéûÔ∏è Film Repertoire</button>
+            <button class="admin-nav-btn" onclick="switchAdmin(event, 'promotions')">üè∑Ô∏è Promotions</button>
             <button class="admin-nav-btn" onclick="switchAdmin(event, 'sales')">üéüÔ∏è Live Box Office</button>
             <button class="admin-nav-btn" onclick="switchAdmin(event, 'staff')">üë• Staff Directory</button>
 
@@ -331,7 +347,7 @@ if ($movies_result) {
                     style="display:grid; grid-template-columns:repeat(3, 1fr); gap:30px; margin-bottom:60px;">
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Total Gross Revenue</span>
-                        <div class="stat-value-admin">¬£18,240</div>
+                        <div class="stat-value-admin">¬RM18,240</div>
                         <div class="performance-bar-container">
                             <div class="performance-bar-fill" style="width:85%;"></div>
                         </div>
@@ -365,13 +381,13 @@ if ($movies_result) {
                         <h3 style="color:var(--cream); margin-bottom:15px; font-family:var(--font-accent); border-bottom:1px dashed rgba(212,168,83,0.15); padding-bottom:8px;">Weekly Revenue</h3>
                         <div class="chart-container" style="background:none; border:none; padding:0;">
                             <div class="bar-chart" style="height:250px;">
-                                <div class="bar" style="height: 40%; background:var(--gold, #d4a853);" data-value="¬£1,200"></div>
-                                <div class="bar" style="height: 65%; background:var(--gold, #d4a853);" data-value="¬£1,800"></div>
-                                <div class="bar" style="height: 55%; background:var(--gold, #d4a853);" data-value="¬£1,500"></div>
-                                <div class="bar" style="height: 85%; background:var(--retro-red, #b22222);" data-value="¬£2,400"></div>
-                                <div class="bar" style="height: 100%; background:var(--retro-red, #b22222);" data-value="¬£3,000"></div>
-                                <div class="bar" style="height: 95%; background:var(--retro-red, #b22222);" data-value="¬£2,700"></div>
-                                <div class="bar" style="height: 75%; background:var(--gold, #d4a853);" data-value="¬£2,100"></div>
+                                <div class="bar" style="height: 40%; background:var(--gold, #d4a853);" data-value="¬RM1,200"></div>
+                                <div class="bar" style="height: 65%; background:var(--gold, #d4a853);" data-value="¬RM1,800"></div>
+                                <div class="bar" style="height: 55%; background:var(--gold, #d4a853);" data-value="¬RM1,500"></div>
+                                <div class="bar" style="height: 85%; background:var(--retro-red, #b22222);" data-value="¬RM2,400"></div>
+                                <div class="bar" style="height: 100%; background:var(--retro-red, #b22222);" data-value="¬RM3,000"></div>
+                                <div class="bar" style="height: 95%; background:var(--retro-red, #b22222);" data-value="¬RM2,700"></div>
+                                <div class="bar" style="height: 75%; background:var(--gold, #d4a853);" data-value="¬RM2,100"></div>
                             </div>
                             <div
                                 style="display:flex; justify-content:space-around; margin-top:10px; font-family:var(--font-accent, sans-serif); color:var(--mocha, #8b7355); font-size: 0.85rem;">
@@ -442,11 +458,84 @@ if ($movies_result) {
                                     <td><strong style="font-family:var(--font-display, serif); color:var(--cream, #fff); font-size:1.2rem;">
                                         <?php echo htmlspecialchars($m['movie_name']); ?></strong></td>
                                     <td style="color: var(--cream-dim, #e0d8c8);"><?php echo $m['release_year']; ?></td>
-                                    <td><span class="status-badge status-live">Live Engagement</span></td>
-                                    <td style="color:var(--gold, #d4a853);">¬£<?php echo number_format($m['price'], 2); ?></td>
+                                    <td>
+                                        <?php
+                                        // Use 'today' to strip the time component (H:i:s) for accurate date-only comparison
+                                        $today = new DateTime('today');
+                                        
+                                        // Ensure we have a valid date; if it's empty or '0000-00-00', fallback to epoch
+                                        $raw_start = (!empty($m['start_date']) && $m['start_date'] !== '0000-00-00') ? $m['start_date'] : '1970-01-01';
+                                        $start = new DateTime($raw_start);
+                                        $start->setTime(0, 0);
+
+                                        $end = clone $start;
+                                        $end->modify('+14 days');
+
+                                        if ($today < $start) {
+                                            echo '<span class="status-badge status-planned">Coming Soon</span>';
+                                        } elseif ($today >= $start && $today <= $end) {
+                                            echo '<span class="status-badge status-live">Live Engagement</span>';
+                                        } else {
+                                            echo '<span class="status-badge status-down">Down!</span>';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td style="color:var(--gold, #d4a853);">¬RM<?php echo number_format($m['price'], 2); ?></td>
                                     <td style="text-align:right;">
                                         <button class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem; background: var(--gold); color: var(--bg-deep); border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="window.location.href='admin_edit_movie.php?id=<?php echo $m['movie_id']; ?>'">
                                             Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="promotions" class="tab-pane">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+                    <h1 style="font-style:italic; color: var(--cream, #fff);">Promotion Ledgers</h1>
+                    <button class="btn-coral"
+                        style="padding:10px 25px; background: var(--sunset-coral, #e8735a); color: #fff; border: none; border-radius: 4px; cursor: pointer;"
+                        onclick="window.location.href='admin_set_promotion.php'">
+                        + Mint New Coupon
+                    </button>
+                </div>
+
+                <table class="admin-table-premium">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Offer Detail</th>
+                            <th>Code</th>
+                            <th>Discount</th>
+                            <th>Min. Spend</th>
+                            <th style="text-align:right;">Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($promos)): ?>
+                            <tr><td colspan="6" style="text-align: center; color: var(--mocha); padding: 40px;">No active promotions.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($promos as $p): ?>
+                                <tr class="data-row">
+                                    <td>
+                                        <?php if ($p['is_active']): ?>
+                                            <span class="status-badge status-live" style="padding: 2px 8px; font-size: 0.7rem;">Active</span>
+                                        <?php else: ?>
+                                            <span class="status-badge status-down" style="padding: 2px 8px; font-size: 0.7rem;">Paused</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <div style="color: var(--cream, #fff); font-weight: 600;"><?php echo htmlspecialchars($p['description']); ?></div>
+                                    </td>
+                                    <td style="font-family: monospace; letter-spacing: 0.1em; color: var(--gold);"><?php echo htmlspecialchars($p['promo_code']); ?></td>
+                                    <td style="color: var(--cream-dim);">-¬RM<?php echo number_format($p['discount_value'], 2); ?></td>
+                                    <td style="color: var(--mocha);">¬RM<?php echo number_format($p['minimum_spend'], 2); ?></td>
+                                    <td style="text-align:right;">
+                                        <button class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem; background: var(--gold); color: var(--bg-deep); border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="window.location.href='admin_set_promotion.php'">
+                                            Manage
                                         </button>
                                     </td>
                                 </tr>
