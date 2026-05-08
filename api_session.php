@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Fetch fresh user data from database (in case of updates)
-$stmt = $conn->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT * FROM users WHERE user_id = ? LIMIT 1');
 $stmt->bind_param('i', $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
