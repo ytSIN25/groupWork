@@ -147,11 +147,11 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
         .admin-nav-btn {
             background: none;
             border: none;
-            color: var(--cream-dim, #e0d8c8);
+            color: rgb(154, 139, 122);
             font-family: inherit;
             text-align: left;
             padding: 15px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             border-radius: 4px;
             transition: all 0.3s;
@@ -170,7 +170,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
 
         .admin-nav-btn.active {
             background: var(--retro-red, #b22222);
-            color: white;
+            color: rgb(252, 190, 190);
             box-shadow: 0 0 20px var(--retro-red-glow, rgba(178, 34, 34, 0.5));
         }
 
