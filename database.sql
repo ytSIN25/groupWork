@@ -129,3 +129,14 @@ CREATE TABLE IF NOT EXISTS ratings (
     FOREIGN KEY (user_id)  REFERENCES users(user_id)  ON DELETE CASCADE,
     FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE
 );
+
+-- -------------------------------------------------
+-- User Preferences
+-- -------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_preferences (
+    user_id           INT PRIMARY KEY,
+    preferred_seating VARCHAR(100) DEFAULT 'The Circle (Balcony)',
+    preferred_snack   VARCHAR(255) DEFAULT '',
+    preferred_genre   VARCHAR(100) DEFAULT '',
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);

@@ -753,7 +753,6 @@ a:hover {
 }
 
 .form-group input,
-.form-group select,
 .form-group textarea {
   width: 100%;
   background: rgba(255, 255, 255, 0.03);
@@ -765,6 +764,20 @@ a:hover {
   font-size: 1.15rem;
   outline: none;
   transition: var(--transition);
+}
+
+.form-group select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: none;
+  border-bottom: 1.5px solid rgba(212, 168, 83, 0.25);
+  padding: 12px 8px;
+  color: #e7dece;
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  outline: none;
+  transition: var(--transition);
+  cursor: pointer;
 }
 
 .form-group input:focus {
