@@ -42,12 +42,11 @@ if ($promos_result) {
 $weekly_revenue = array_fill(0, 7, 0); // 0=Mon, 1=Tue, ..., 6=Sun
 $rev_query = "
     SELECT 
-        WEEKDAY(o.order_date) as day_index, 
+        WEEKDAY(o.order_date) as day_index,
         SUM(o.total_price) as daily_total
     FROM orders o
-    JOIN showtimes s ON o.showtime_id = s.showtime_id
-    JOIN movies m ON s.movie_id = m.movie_id
-    WHERE m.user_id = $admin_id 
+    JOIN movies m ON o.movie_id = m.movie_id
+    WHERE m.user_id = $admin_id
     AND YEARWEEK(o.order_date, 1) = YEARWEEK(CURDATE(), 1)
     GROUP BY day_index
 ";
@@ -66,11 +65,10 @@ $movie_labels = [];
 $movie_revenue = [];
 $movie_rev_query = "
     SELECT 
-        m.movie_name, 
+        m.movie_name,
         SUM(o.total_price) as movie_total
     FROM orders o
-    JOIN showtimes s ON o.showtime_id = s.showtime_id
-    JOIN movies m ON s.movie_id = m.movie_id
+    JOIN movies m ON o.movie_id = m.movie_id
     WHERE m.user_id = $admin_id
     GROUP BY m.movie_id
 ";
@@ -86,10 +84,11 @@ if ($movie_rev_result) {
 // --- ALL-TIME STATISTICS ---
 // Total Gross Revenue (All Time for this Admin)
 $all_time_rev_query = "
-    SELECT SUM(o.total_price) as total_gross, SUM(o.num_seats) as total_admissions
+    SELECT 
+        SUM(o.total_price) as total_gross,
+        SUM(o.num_seats) as total_admissions
     FROM orders o
-    JOIN showtimes s ON o.showtime_id = s.showtime_id
-    JOIN movies m ON s.movie_id = m.movie_id
+    JOIN movies m ON o.movie_id = m.movie_id
     WHERE m.user_id = $admin_id
 ";
 $all_time_res = $conn->query($all_time_rev_query);
