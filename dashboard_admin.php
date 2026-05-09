@@ -430,17 +430,14 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Total Gross Revenue</span>
                         <div class="stat-value-admin">RM <?php echo number_format($total_gross_all_time, 0); ?></div>
-                        <p style="margin-top:10px; font-size:0.8rem; color:var(--retro-mint, #88c0d0);">Lifetime Performance</p>
                     </div>
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Admissions Scanned</span>
                         <div class="stat-value-admin"><?php echo number_format($total_admissions_all_time); ?></div>
-                        <p style="margin-top:10px; font-size:0.8rem; color:var(--gold, #d4a853);">Patronage to date</p>
                     </div>
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Active Catalog Size</span>
                         <div class="stat-value-admin"><?php echo $active_catalog_size; ?></div>
-                        <p style="margin-top:10px; font-size:0.8rem; color:var(--sunset-coral, #e8735a);">Films in repertoire</p>
                     </div>
                 </div>
 
