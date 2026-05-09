@@ -17,6 +17,7 @@ if (!isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="css/pages/index.css?v=5">
     <link rel="stylesheet" href="css/pages/footer.css?v=5">
     <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
 </head>
 <body>
     <div class="film-grain"></div>
@@ -91,7 +92,7 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="movie-card skew-up" 
                      data-genre="<?= $row['genre'] ?>" 
                      data-price-value="<?= $row['price'] ?>" 
-                     onclick="window.location.href='booking.php?movie_id=<?= $row['movie_id'] ?>'">
+                     onclick="window.location.href='movie.php?movie_id=<?= $row['movie_id'] ?>'">
                     <div class="movie-poster-wrap">
                         <img src="<?= $row['poster_path'] ?>" alt="<?= htmlspecialchars($row['movie_name']) ?>">
                     </div>

@@ -10,6 +10,7 @@ $members_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as tota
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMIÈRE - Where Every Seat Tells a Story</title>
@@ -101,7 +102,7 @@ $members_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as tota
             $delay = 0;
             while($row = mysqli_fetch_assoc($result)): 
             ?>
-            <div class="movie-card skew-up" data-delay="<?= $delay ?>" onclick="triggerPageTransition('booking.php?movie_id=<?= $row['movie_id'] ?>')">
+            <div class="movie-card skew-up" data-delay="<?= $delay ?>" onclick="triggerPageTransition('movie.php?movie_id=<?= $row['movie_id'] ?>')">
                 <div class="movie-poster-wrap"><img src="<?= $row['poster_path'] ?>" alt="<?= htmlspecialchars($row['movie_name']) ?>"></div>
                 <div class="movie-info">
                     <h3 class="movie-title"><?= htmlspecialchars($row['movie_name']) ?></h3>

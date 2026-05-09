@@ -113,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
     <link rel="stylesheet" href="css/pages/footer.css?v=5">
     <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
 </head>
 
 <body>

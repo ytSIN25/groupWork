@@ -121,6 +121,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
     <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
     <link rel="stylesheet" href="css/pages/footer.css?v=5">
     <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .admin-sidebar {

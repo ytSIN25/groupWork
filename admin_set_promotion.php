@@ -88,6 +88,7 @@ if (isset($_GET['delete_id'])) {
     <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
     <link rel="stylesheet" href="css/pages/footer.css?v=5">
     <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <style>
         .edit-controls {
             display: flex;

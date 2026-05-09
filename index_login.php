@@ -21,6 +21,7 @@ if (isset($_SESSION['user_id']) && !isset($_GET['force'])) {
   <link rel="stylesheet" href="css/base.css?v=5">
   <link rel="stylesheet" href="css/pages/auth.css?v=5">
   <link rel="stylesheet" href="css/global.css?v=5">
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
