@@ -113,11 +113,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     
     <nav class="lumiere-nav">
-        <a href="dashboard.html" class="lumiere-logo">
+        <a href="movies.php" class="lumiere-logo">
             <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE">
         </a>
         <div class="nav-links">
-            <a href="dashboard.html" class="nav-link">Cancel Reservation</a>
+            <a href="movies.php" class="nav-link">Cancel Reservation</a>
         </div>
     </nav>
 

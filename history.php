@@ -45,7 +45,7 @@ $res = $stmt->get_result();
             <a href="index.php" class="nav-link">Home</a>
             <a href="movies.php" class="nav-link">Now Showing</a>
             <a href="history.php" class="nav-link" style="color:var(--sunset-coral);">My Tickets</a>
-            <a href="dashboard-user.php" class="nav-link">Account</a>
+            <a href="dashboard_user.php" class="nav-link">Account</a>
             <a href="about.php" class="nav-link">The Cinema</a>
         </div>
     </nav>
@@ -100,8 +100,8 @@ $res = $stmt->get_result();
         <div class="footer-links">
             <a href="movies.php">Now Showing</a>
             <a href="about.php">The Cinema</a>
-            <a href="dashboard-user.php">Account</a>
-            <a href="dashboard-admin.php">Staff Area</a>
+            <a href="dashboard_user.php">Account</a>
+            <a href="dashboard_admin.php">Staff Area</a>
         </div>
         <p style="margin-top:30px; font-size:0.9rem; opacity:0.5;">© 2026 LUMIÈRE Cinemas. All rights reserved.</p>
     </footer>
