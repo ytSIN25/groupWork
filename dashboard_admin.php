@@ -401,7 +401,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
             </div>
             <img src="<?php echo htmlspecialchars($admin_avatar); ?>" alt="Admin"
                 style="width:45px; height:45px; border-radius:50%; border:2px solid var(--retro-red, #b22222);">
-            <button onclick="API.logout()" style="background: none; border: 1px solid var(--retro-red); color: var(--retro-red); padding: 5px 12px; font-family: var(--font-accent); font-size: 0.75rem; border-radius: 4px; cursor: pointer; transition: all 0.3s; margin-left: 10px; letter-spacing: 0.1em;" onmouseover="this.style.background='var(--retro-red)'; this.style.color='white';" onmouseout="this.style.background='none'; this.style.color='var(--retro-red)';">LOGOUT</button>
+            <button onclick="API.logout()" style="background: none; border: 1px solid var(--retro-red); color: var(--retro-red); padding: 5px 12px; font-family: var(--font-accent); font-size: 0.75rem; border-radius: 4px; cursor: pointer; transition: all 0.3s; margin-left: 10px; letter-spacing: 0.1em;" onmouseover="this.style.background='var(--retro-red)'; this.style.color='white';" onmouseout="this.style.background='none'; this.style.color='var(--retro-red)';">LOG OUT</button>
         </div>
     </nav>
 
