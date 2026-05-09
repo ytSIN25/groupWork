@@ -63,10 +63,23 @@ CREATE TABLE IF NOT EXISTS showtimes (
     showtime_id       INT AUTO_INCREMENT PRIMARY KEY,
     movie_id          INT NOT NULL,
     auditorium_number INT NOT NULL,
-    show_date         DATE NOT NULL,
     start_time        TIME NOT NULL,
     FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE
 );
+
+-- -------------------------------------------------
+-- Insert 3 Showtimes per Movie (Slot templates)
+-- -------------------------------------------------
+INSERT INTO showtimes (movie_id, auditorium_number, start_time) VALUES
+-- Movie 1
+(1, 1, '14:00:00'), (1, 1, '17:30:00'), (1, 1, '21:00:00'),
+-- Movie 2
+(2, 2, '14:00:00'), (2, 2, '17:30:00'), (2, 2, '21:00:00'),
+-- Movie 3
+(3, 1, '14:30:00'), (3, 1, '18:00:00'), (3, 1, '21:30:00'),
+-- Movie 4
+(4, 2, '14:30:00'), (4, 2, '18:00:00'), (4, 2, '21:30:00');
+
 
 -- -------------------------------------------------
 -- Promotions
@@ -88,14 +101,19 @@ CREATE TABLE IF NOT EXISTS promotions (
 CREATE TABLE IF NOT EXISTS orders (
     order_id      INT AUTO_INCREMENT PRIMARY KEY,
     user_id       INT NOT NULL,
-    showtime_id   INT NOT NULL,
+    movie_id      INT NOT NULL,
     promotion_id  INT,
+    show_date     DATE NOT NULL,
+    show_time     TIME NOT NULL,
     order_date    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     seats         TEXT NOT NULL,
     num_seats     INT NOT NULL,
     total_price   DECIMAL(10, 2) NOT NULL,
+    cc_number     VARCHAR(20) DEFAULT NULL,
+    cc_expiry     VARCHAR(10) DEFAULT NULL,
+    cc_cvc        VARCHAR(10) DEFAULT NULL,
     FOREIGN KEY (user_id)       REFERENCES users(user_id)       ON DELETE CASCADE,
-    FOREIGN KEY (showtime_id)   REFERENCES showtimes(showtime_id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id)      REFERENCES movies(movie_id)     ON DELETE CASCADE,
     FOREIGN KEY (promotion_id)  REFERENCES promotions(promotion_id) ON DELETE SET NULL
 );
 

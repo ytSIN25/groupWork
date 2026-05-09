@@ -18,8 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = "Error: Movie title is required.";
     } elseif (empty($_POST['start_date'])) {
         $message = "Error: Start date is required.";
-    } elseif (empty($_POST['time_slots'])) {
-        $message = "Error: At least one time slot is required.";
     } else {
         $organiser_id = $_SESSION['user_id'];
         $title        = $_POST['title'];
@@ -32,58 +30,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $start_date   = $_POST['start_date'] ?? "";
         $price        = $_POST['price'] ?? 0.00;
         $auditorium   = $_POST['auditorium'] ?? 0;
-        $time_slots   = $_POST['time_slots'] ?? "";
+        $s1 = $_POST['slot1'] ?? "";
+        $s2 = $_POST['slot2'] ?? "";
+        $s3 = $_POST['slot3'] ?? "";
 
-        // Handle Poster Uploading
-        $poster_path = "";
-        if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
-            $file_tmp = $_FILES['poster']['tmp_name'];
-            $file_ext = pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION);
+        // Interval Validation
+        $duration = (int)$duration;
+        $t1 = strtotime($s1);
+        $t2 = strtotime($s2);
+        $t3 = strtotime($s3);
 
-            // random code to prevent file name collisions
-            $safe_title = preg_replace('/[^a-z0-9]+/', '_', strtolower($title));
-            $filename = "poster_" . $safe_title . "_" . time() . "." . $file_ext;
-            $poster_path = "assets/images/" . $filename;
+        if (!$t1 || !$t2 || !$t3) {
+            $message = "Error: All three showtime slots are required and must be valid times.";
+        } else {
+            $sorted_times = [$t1, $t2, $t3];
+            sort($sorted_times);
 
-            // auto create assets/images folder if not exists
-            if (!is_dir('assets/images/')) {
-                mkdir('assets/images/', 0777, true);
-            }
-            move_uploaded_file($file_tmp, $poster_path);
-        }
+            if (($sorted_times[1] - $sorted_times[0]) < ($duration * 60) || ($sorted_times[2] - $sorted_times[1]) < ($duration * 60)) {
+                $message = "Error: Showtimes must be at least $duration minutes apart.";
+            } else {
+                // Handle Poster Uploading
+                $poster_path = "";
+                if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
+                    $file_tmp = $_FILES['poster']['tmp_name'];
+                    $file_ext = pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION);
 
-        // Insert Movie
-        $stmt = $conn->prepare("INSERT INTO movies (movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, price, start_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    // random code to prevent file name collisions
+                    $safe_title = preg_replace('/[^a-z0-9]+/', '_', strtolower($title));
+                    $filename = "poster_" . $safe_title . "_" . time() . "." . $file_ext;
+                    $poster_path = "assets/images/" . $filename;
 
-        // Bind parameters
-        if ($stmt) {
-            $stmt->bind_param("sissssssids", $title, $organiser_id, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $price, $start_date);
+                    // auto create assets/images folder if not exists
+                    if (!is_dir('assets/images/')) {
+                        mkdir('assets/images/', 0777, true);
+                    }
+                    move_uploaded_file($file_tmp, $poster_path);
+                }
 
-            // Execute and get last inserted id
-            if ($stmt->execute()) {
-                $movie_id = $conn->insert_id;
-                $stmt->close();
+                // Insert Movie
+                $stmt = $conn->prepare("INSERT INTO movies (movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, price, start_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-                // Insert Showtimes
-                $slots = explode(',', $time_slots);
-                foreach ($slots as $slot) {
-                    $slot = trim($slot);
-                    if ($slot !== "") {
-                        $stmt_st = $conn->prepare("INSERT INTO showtimes (movie_id, auditorium_number, show_date, start_time) VALUES (?, ?, ?, ?)");
-                        if ($stmt_st) {
-                            $stmt_st->bind_param("iiss", $movie_id, $auditorium, $start_date, $slot);
-                            $stmt_st->execute();
-                            $stmt_st->close();
+                // Bind parameters
+                if ($stmt) {
+                    $stmt->bind_param("sissssssids", $title, $organiser_id, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $price, $start_date);
+
+                    // Execute and get last inserted id
+                    if ($stmt->execute()) {
+                        $movie_id = $conn->insert_id;
+                        $stmt->close();
+
+                        // Insert Showtimes
+                        $slots = [$s1, $s2, $s3];
+                        foreach ($slots as $slot) {
+                            if ($slot !== "") {
+                                $stmt_st = $conn->prepare("INSERT INTO showtimes (movie_id, auditorium_number, start_time) VALUES (?, ?, ?)");
+                                if ($stmt_st) {
+                                    $stmt_st->bind_param("iis", $movie_id, $auditorium, $slot);
+                                    $stmt_st->execute();
+                                    $stmt_st->close();
+                                }
+                            }
                         }
+                        $message = "Picture added to archive.";
+                    } else {
+                        $message = "Error executing statement: " . $stmt->error;
+                        $stmt->close();
                     }
                 }
-                $message = "Picture added to archive.";
-            } else {
-                $message = "Error executing statement: " . $stmt->error;
-                $stmt->close();
             }
-        } else {
-            $message = "Error preparing statement: " . $conn->error;
         }
     }
 }
@@ -206,9 +220,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label style="color: var(--bg-deep); font-weight: 600;">Auditorium No.</label>
                             <input type="number" name="auditorium" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" placeholder="1-8">
                         </div>
+                    </div>
+
+                    <p style="color: var(--bg-deep); font-weight: 600; margin-top: 20px; font-family: var(--font-accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">Showtime Slots (3 Slots Required)</p>
+                    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
                         <div class="form-group" style="flex: 1;">
-                            <label style="color: var(--bg-deep); font-weight: 600;">Time Slots</label>
-                            <input type="text" name="time_slots" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" placeholder="14:00, 17:30, 20:00" required>
+                            <label style="font-size: 0.7rem; color: var(--bg-deep);">Slot 1</label>
+                            <input type="time" name="slot1" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" required>
+                        </div>
+
+                        <div class="form-group" style="flex: 1;">
+                            <label style="font-size: 0.7rem; color: var(--bg-deep);">Slot 2</label>
+                            <input type="time" name="slot2" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" required>
+                        </div>
+                        
+                        <div class="form-group" style="flex: 1;">
+                            <label style="font-size: 0.7rem; color: var(--bg-deep);">Slot 3</label>
+                            <input type="time" name="slot3" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" required>
                         </div>
                     </div>
 

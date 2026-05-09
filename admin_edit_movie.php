@@ -1,5 +1,4 @@
 <?php
-// Error displaying
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once 'config.php';
@@ -18,7 +17,7 @@ if (!$movie_id) {
     exit();
 }
 
-// 1. Fetch Current Movie Data
+// Fetch Current Movie Data
 $movie = null;
 $stmt_fetch = $conn->prepare("SELECT * FROM movies WHERE movie_id = ?");
 $stmt_fetch->bind_param("i", $movie_id);
@@ -32,120 +31,121 @@ if (!$movie) {
     exit();
 }
 
-// 2. Fetch Current Showtimes
-$showtimes_res = $conn->query("SELECT * FROM showtimes WHERE movie_id = $movie_id");
-$slots_arr = [];
-$current_date = "";
+// Fetch Current Showtimes (Slots)
+$showtimes_res = $conn->query("SELECT * FROM showtimes WHERE movie_id = $movie_id ORDER BY start_time");
+$slots = [];
 $current_auditorium = "";
 while ($st = $showtimes_res->fetch_assoc()) {
-    $slots_arr[] = substr($st['start_time'], 0, 5); // HH:MM
-    $current_date = $st['show_date'];
+    $slots[] = substr($st['start_time'], 0, 5);
     $current_auditorium = $st['auditorium_number'];
 }
-$time_slots_str = implode(", ", $slots_arr);
+$slot1 = $slots[0] ?? "";
+$slot2 = $slots[1] ?? "";
+$slot3 = $slots[2] ?? "";
 
-// 3. Handle Update Request
+// Update Request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['title']) || empty($_POST['title'])) {
+    $title      = $_POST['title'] ?? '';
+    $start_date = $_POST['start_date'] ?? '';
+    $director   = $_POST['director'] ?? '';
+    $genre      = $_POST['genre'] ?? '';
+    $year       = $_POST['year'] ?? '';
+    $starring   = $_POST['starring'] ?? '';
+    $synopsis   = $_POST['synopsis'] ?? '';
+    $duration   = (int)($_POST['duration'] ?? 0);
+    $price      = $_POST['price'] ?? 0;
+    $auditorium = $_POST['auditorium'] ?? $current_auditorium;
+    
+    $s1 = $_POST['slot1'] ?? "";
+    $s2 = $_POST['slot2'] ?? "";
+    $s3 = $_POST['slot3'] ?? "";
+
+    if (empty($title)) {
         $message = "Error: Movie title is required.";
-    } elseif (empty($_POST['start_date'])) {
+    } elseif (empty($start_date)) {
         $message = "Error: Start date is required.";
-    } elseif (empty($_POST['time_slots'])) {
-        $message = "Error: At least one time slot is required.";
+    } elseif (empty($s1) || empty($s2) || empty($s3)) {
+        $message = "Error: All three showtime slots are required.";
     } else {
-        $title        = $_POST['title'];
-        $year         = $_POST['year'] ?? $movie['release_year'];
-        $director     = $_POST['director'] ?? $movie['director'];
-        $genre        = $_POST['genre'] ?? $movie['genre'];
-        $duration     = $_POST['duration'] ?? $movie['duration'];
-        $starring     = $_POST['starring'] ?? $movie['starring'];
-        $synopsis     = $_POST['synopsis'] ?? $movie['description'];
-        $start_date   = $_POST['start_date'] ?? $current_date;
-        $price        = $_POST['price'] ?? $movie['price'];
-        $auditorium   = $_POST['auditorium'] ?? $current_auditorium;
-        $time_slots   = $_POST['time_slots'] ?? "";
+        $t1 = strtotime($s1);
+        $t2 = strtotime($s2);
+        $t3 = strtotime($s3);
+        
+        $sorted_times = [$t1, $t2, $t3];
+        sort($sorted_times);
 
-        // Poster Upload Logic
-        $poster_path = $movie['poster_path'];
-        if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
-            $file_tmp = $_FILES['poster']['tmp_name'];
-            $file_ext = pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION);
-            $safe_title = preg_replace('/[^a-z0-9]+/', '_', strtolower($title));
-            $filename = "poster_" . $safe_title . "_" . time() . "." . $file_ext;
-            $new_path = "assets/images/" . $filename;
-            if (move_uploaded_file($file_tmp, $new_path)) {
-                $poster_path = $new_path;
-            }
-        }
-
-        // Update Movie Table
-        $stmt_up = $conn->prepare("UPDATE movies SET movie_name=?, director=?, genre=?, release_year=?, starring=?, description=?, poster_path=?, duration=?, price=?, start_date=? WHERE movie_id=?"); 
-        $stmt_up->bind_param("sssssssidsi", $title, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $price, $start_date, $movie_id);
-
-        if ($stmt_up->execute()) {
-            // Safely Update Showtimes
-            $new_slots = array_map('trim', explode(',', $time_slots));
-            
-            // 1. Get existing showtimes for this movie
-            $existing_stmt = $conn->prepare("SELECT showtime_id, start_time FROM showtimes WHERE movie_id = ?");
-            $existing_stmt->bind_param("i", $movie_id);
-            $existing_stmt->execute();
-            $existing_res = $existing_stmt->get_result();
-            $existing_slots = [];
-            while($row = $existing_res->fetch_assoc()) {
-                $existing_slots[substr($row['start_time'], 0, 5)] = $row['showtime_id'];
-            }
-            $existing_stmt->close();
-
-            // 2. Process requested slots
-            $processed_ids = [];
-            foreach ($new_slots as $slot) {
-                if ($slot === "") continue;
-                $formatted_slot = date("H:i", strtotime($slot));
+        if (($sorted_times[1] - $sorted_times[0]) < ($duration * 60) || 
+            ($sorted_times[2] - $sorted_times[1]) < ($duration * 60)) {
+            $message = "Error: Showtimes must be at least $duration minutes apart.";
+        } else {
+            // Poster Upload 
+            $poster_path = $movie['poster_path'];
+            if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
+                $file_tmp = $_FILES['poster']['tmp_name'];
+                $file_ext = pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION);
+                $safe_title = preg_replace('/[^a-z0-9]+/', '_', strtolower($title));
+                $filename = "poster_" . $safe_title . "_" . time() . "." . $file_ext;
+                $new_path = "assets/images/" . $filename;
                 
-                if (isset($existing_slots[$formatted_slot])) {
-                    // Update existing
-                    $sid = $existing_slots[$formatted_slot];
-                    $up_st = $conn->prepare("UPDATE showtimes SET show_date = ?, auditorium_number = ? WHERE showtime_id = ?");
-                    $up_st->bind_param("sii", $start_date, $auditorium, $sid);
-                    $up_st->execute();
-                    $up_st->close();
-                    $processed_ids[] = $sid;
-                } else {
-                    // Insert new
-                    $ins_st = $conn->prepare("INSERT INTO showtimes (movie_id, auditorium_number, show_date, start_time) VALUES (?, ?, ?, ?)");
-                    $ins_st->bind_param("iiss", $movie_id, $auditorium, $start_date, $slot);
-                    $ins_st->execute();
-                    $processed_ids[] = $conn->insert_id;
-                    $ins_st->close();
+                if (move_uploaded_file($file_tmp, $new_path)) {
+                    $poster_path = $new_path;
                 }
             }
 
-            // 3. Remove old slots ONLY IF they have no orders
-            foreach ($existing_slots as $time => $sid) {
-                if (!in_array($sid, $processed_ids)) {
-                    // Check for orders
-                    $order_check = $conn->query("SELECT COUNT(*) as count FROM orders WHERE showtime_id = $sid");
-                    $has_orders = $order_check->fetch_assoc()['count'] > 0;
-                    if (!$has_orders) {
-                        $conn->query("DELETE FROM showtimes WHERE showtime_id = $sid");
+            // 4. Update Movie Table
+            $stmt_up = $conn->prepare("UPDATE movies SET movie_name=?, director=?, genre=?, release_year=?, starring=?, description=?, poster_path=?, duration=?, price=?, start_date=? WHERE movie_id=?"); 
+            $stmt_up->bind_param("sssssssidsi", $title, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $price, $start_date, $movie_id);
+
+            if ($stmt_up->execute()) {
+                // 5. Sync Showtimes (Update existing or Insert new)
+                $stmt_get_ids = $conn->prepare("SELECT showtime_id FROM showtimes WHERE movie_id = ? ORDER BY showtime_id");
+                $stmt_get_ids->bind_param("i", $movie_id);
+                $stmt_get_ids->execute();
+                $existing_res = $stmt_get_ids->get_result();
+                
+                $existing_ids = [];
+                while($r = $existing_res->fetch_assoc()) $existing_ids[] = $r['showtime_id'];
+
+                $new_slots = [$s1, $s2, $s3];
+                foreach($new_slots as $idx => $ts) {
+                    if(isset($existing_ids[$idx])) {
+                        // Update existing slot
+                        $sid = $existing_ids[$idx];
+                        $up = $conn->prepare("UPDATE showtimes SET auditorium_number=?, start_time=? WHERE showtime_id=?");
+                        $up->bind_param("isi", $auditorium, $ts, $sid);
+                        $up->execute();
+                    } else {
+                        $ins = $conn->prepare("INSERT INTO showtimes (movie_id, auditorium_number, start_time) VALUES (?, ?, ?)");
+                        $ins->bind_param("iis", $movie_id, $auditorium, $ts);
+                        $ins->execute();
                     }
                 }
+
+                // Cleanup extra slots
+                if(count($existing_ids) > 3) {
+                    for($i=3; $i<count($existing_ids); $i++) {
+                        $sid = $existing_ids[$i];
+                        $del = $conn->prepare("DELETE FROM showtimes WHERE showtime_id = ?");
+                        $del->bind_param("i", $sid);
+                        $del->execute();
+                    }
+                }
+                $message = "Movie details and showtime slots successfully updated.";
+                
+                // Update local array for immediate UI feedback
+                $movie['movie_name'] = $title;
+                $movie['poster_path'] = $poster_path;
+            } else {
+                $message = "Database Error: " . $stmt_up->error;
             }
-            $message = "Amendments recorded. Sales data preserved.";
-            // Refresh local movie data for display
-            $movie['movie_name'] = $title;
-            $movie['poster_path'] = $poster_path;
-        } else {
-            $message = "Error: " . $stmt_up->error;
+            $stmt_up->close();
         }
-        $stmt_up->close();
     }
 }
 
-// 4. Handle Deletion Request
+// Delete
 if (isset($_POST['delete_movie'])) {
-    // A. Fetch poster path to delete the physical file
+    // Fetch poster path
     $stmt_path = $conn->prepare("SELECT poster_path FROM movies WHERE movie_id = ? AND user_id = ?");
     $admin_id = $_SESSION['user_id'];
     $stmt_path->bind_param("ii", $movie_id, $admin_id);
@@ -156,13 +156,11 @@ if (isset($_POST['delete_movie'])) {
 
     if ($path_data && !empty($path_data['poster_path'])) {
         $p_path = $path_data['poster_path'];
-        // Don't delete if it's an external URL or a protected asset
         if (file_exists($p_path) && strpos($p_path, 'http') === false) {
             unlink($p_path);
         }
     }
 
-    // B. Cascade handles showtimes and orders automatically due to DB constraints
     $stmt_del = $conn->prepare("DELETE FROM movies WHERE movie_id = ? AND user_id = ?");
     $stmt_del->bind_param("ii", $movie_id, $admin_id);
     
@@ -275,7 +273,7 @@ if (isset($_POST['delete_movie'])) {
                             <div style="display: flex; gap: 20px;">
                                 <div class="form-group" style="flex: 1;">
                                     <label style="color: var(--bg-deep); font-weight: 600;">Start Date</label>
-                                    <input type="date" name="start_date" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $current_date; ?>" required>
+                                    <input type="date" name="start_date" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $movie['start_date']; ?>" required>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label style="color: var(--bg-deep); font-weight: 600;">Auditorium No.</label>
@@ -283,15 +281,25 @@ if (isset($_POST['delete_movie'])) {
                                 </div>
                             </div>
 
-                            <div style="display: flex; gap: 20px;">
+                            <p style="color: var(--mocha); font-family: var(--font-accent); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 10px; margin-top: 20px;">Showtime Slots (Must be <?= $movie['duration'] ?>m apart)</p>
+                            <div style="display: flex; gap: 15px;">
                                 <div class="form-group" style="flex: 1;">
-                                    <label style="color: var(--bg-deep); font-weight: 600;">Time Slots</label>
-                                    <input type="text" name="time_slots" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $time_slots_str; ?>" required>
+                                    <label style="font-size: 0.7rem; color: var(--bg-deep);">Slot 1</label>
+                                    <input type="time" name="slot1" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $slot1; ?>" required>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
-                                    <label style="color: var(--bg-deep); font-weight: 600;">Base Price (RM)</label>
-                                    <input type="number" step="0.01" name="price" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $movie['price']; ?>">
+                                    <label style="font-size: 0.7rem; color: var(--bg-deep);">Slot 2</label>
+                                    <input type="time" name="slot2" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $slot2; ?>" required>
                                 </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label style="font-size: 0.7rem; color: var(--bg-deep);">Slot 3</label>
+                                    <input type="time" name="slot3" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $slot3; ?>" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-top: 20px;">
+                                <label style="color: var(--bg-deep); font-weight: 600;">Base Price (RM)</label>
+                                <input type="number" step="0.01" name="price" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $movie['price']; ?>">
                             </div>
 
                             <button type="submit" class="btn-primary" style="width: 100%; margin-top: 20px; color: var(--bg-deep); border-color: var(--bg-deep);">
@@ -348,7 +356,7 @@ if (isset($_POST['delete_movie'])) {
     <script>
         function checkFileSize(input) {
             if (input.files && input.files[0]) {
-                const fileSize = input.files[0].size / 1024 / 1024; // MB
+                const fileSize = input.files[0].size / 1024 / 1024;
                 if (fileSize > 2) {
                     Swal.fire({
                         title: 'Celluloid Too Large',
