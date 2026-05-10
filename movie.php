@@ -12,7 +12,7 @@ if (!$movie) {
         exit();
 }
 
-// Fetch user preference for default tier
+// Fetch user preference
 $user_pref_tier = 'Stalls';
 if (isset($_SESSION['user_id'])) {
         $stmt_p = $conn->prepare("SELECT preferred_seating FROM user_preferences WHERE user_id = ?");
@@ -27,6 +27,7 @@ if (isset($_SESSION['user_id'])) {
         $stmt_p->close();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,19 +36,23 @@ if (isset($_SESSION['user_id'])) {
     <title>LUMIÈRE - <?= htmlspecialchars($movie['movie_name']) ?></title>
     <meta name="description" content="<?= htmlspecialchars(substr($movie['description'], 0, 150)) ?>... Now showing at LUMIÈRE.">
     <link rel="stylesheet" href="css/base.css?v=5">
-        <link rel="stylesheet" href="css/pages/movie-details.css?v=5">
-        <link rel="stylesheet" href="css/pages/booking.css?v=5">
-        <link rel="stylesheet" href="css/pages/footer.css?v=5">
-        <link rel="stylesheet" href="css/global.css?v=5">
-        <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="stylesheet" href="css/pages/movie-details.css?v=5">
+    <link rel="stylesheet" href="css/pages/booking.css?v=5">
+    <link rel="stylesheet" href="css/pages/footer.css?v=5">
+    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
 </head>
+
 <body>
-    
     <div class="film-grain"></div>
-    <div class="page-transition active" id="pageTransition"><span class="trans-logo">LUMIÈRE</span></div>
+    <div class="page-transition active" id="pageTransition">
+        <span class="trans-logo">LUMIÈRE</span>
+    </div>
 
     <nav class="lumiere-nav">
-        <a href="movies.php" class="lumiere-logo"><img src="assets/images/logo.svg?v=5" alt="LUMIÈRE"></a>
+        <a href="movies.php" class="lumiere-logo">
+            <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE">
+        </a>
         <div class="nav-links">
             <a href="index.php" class="nav-link">Home</a>
             <a href="movies.php" class="nav-link">Now Showing</a>
@@ -63,7 +68,10 @@ if (isset($_SESSION['user_id'])) {
                 <div class="detail-tagline" data-delay="100">LUMIÈRE Selection</div>
                 <h1 class="detail-title"><?= htmlspecialchars($movie['movie_name']) ?></h1>
                 <div class="detail-meta">
-                    <span><?= $movie['release_year'] ?></span><span><?= $movie['duration'] ?> Minutes</span><span><?= htmlspecialchars($movie['director']) ?></span><span><?= $movie['genre'] ?></span>
+                    <span><?= $movie['release_year'] ?></span>
+                    <span><?= $movie['duration'] ?> Minutes</span>
+                    <span><?= htmlspecialchars($movie['director']) ?></span>
+                    <span><?= $movie['genre'] ?></span>
                 </div>
                 <div class="divider" style="margin:20px 0;"></div>
             </div>
@@ -102,9 +110,10 @@ if (isset($_SESSION['user_id'])) {
                         $stars = explode(',', $movie['starring']);
                         foreach($stars as $star):
                         ?>
-                                <li><span class="cast-name"><?= htmlspecialchars(trim($star)) ?></span></li>
+                        <li><span class="cast-name"><?= htmlspecialchars(trim($star)) ?></span></li>
                         <?php endforeach; ?>
                     </ul>
+
                     <div style="margin-top:40px;">
                         <h3 style="font-size:1.5rem; margin-bottom:15px;">Purchase Admission</h3>
                         <div class="ticket-tiers" id="tierSelector">
@@ -115,6 +124,7 @@ if (isset($_SESSION['user_id'])) {
                                 </div>
                                 <div class="tier-price">RM<?= number_format(LUMIERE_BASE_PRICE, 2) ?></div>
                             </button>
+
                             <button type="button" class="ticket-tier <?= ($user_pref_tier === 'Circle') ? 'selected' : '' ?>" data-tier="Circle" onclick="selectTier(this)">
                                 <div>
                                     <div class="tier-name">Circle</div>
@@ -122,6 +132,7 @@ if (isset($_SESSION['user_id'])) {
                                 </div>
                                 <div class="tier-price">RM<?= number_format(LUMIERE_BASE_PRICE * 1.5, 2) ?></div>
                             </button>
+
                             <button type="button" class="ticket-tier <?= ($user_pref_tier === 'Royal Box') ? 'selected' : '' ?>" data-tier="Royal Box" onclick="selectTier(this)">
                                 <div>
                                     <div class="tier-name">Royal Box</div>
@@ -160,7 +171,6 @@ if (isset($_SESSION['user_id'])) {
             </div>
             <p style="margin-top:30px; font-size:0.9rem; opacity:0.5;">© 2026 LUMIÈRE Cinemas. All rights reserved.</p>
         </footer>
-
     </div>
     <script src="js/main.js?v=5"></script>
 </body>

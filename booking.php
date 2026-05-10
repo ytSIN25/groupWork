@@ -121,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="movies.php" class="lumiere-logo">
             <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE">
         </a>
+
         <div class="nav-links">
             <a href="movies.php" class="nav-link">Cancel Reservation</a>
         </div>
@@ -255,10 +256,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="divider" style="margin:15px 0; background:linear-gradient(90deg, transparent, var(--mocha), transparent);"></div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; font-size:1.1rem; color:var(--bg-deep);">
-                    <div><div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Date</div><div style="font-weight:600;" id="ticketDate">—</div></div>
-                    <div><div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Time</div><div style="font-weight:600;" id="ticketTime">—</div></div>
-                    <div><div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Seats</div><div style="font-weight:600;" id="ticketSeats">—</div></div>
-                    <div><div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Tier</div><div style="font-weight:600;">Stalls</div></div>
+                    <div>
+                        <div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Date</div>
+                        <div style="font-weight:600;" id="ticketDate">—</div>
+                    </div>
+
+                    <div>
+                        <div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Time</div>
+                        <div style="font-weight:600;" id="ticketTime">—</div>
+                    </div>
+
+                    <div>
+                        <div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Seats</div>
+                        <div style="font-weight:600;" id="ticketSeats">—</div>
+                    </div>
+
+                    <div>
+                        <div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Tier</div>
+                        <div style="font-weight:600;">Stalls</div>
+                    </div>
                 </div>
             </div>
 
@@ -324,7 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const PRICE = <?= LUMIERE_BASE_PRICE * $price_multiplier ?>;
         const SELECTED_TIER = "<?= htmlspecialchars($tier) ?>";
         
-        // Seats from DB
+        // Seats
         const takenSeatsDB = <?= json_encode($taken_seats_data) ?>;
 
         function renderSeatMap() {
@@ -364,6 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 map.appendChild(rd);
             });
         }
+
         function toggleSeat(el,id){
             if(el.classList.contains('selected')){
                 el.classList.remove('selected');
@@ -418,7 +435,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         document.getElementById('paymentForm').onsubmit = e => {
             e.preventDefault();
-
             const expiry = document.getElementById('cc_expiry').value.trim();
             const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
             const match = expiry.match(regex);

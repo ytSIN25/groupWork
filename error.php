@@ -1,5 +1,5 @@
 <?php
-// Fetch error details from GET parameters or use defaults
+// Fetch error details
 $error_code = $_GET['code'] ?? '404';
 $error_message = $_GET['msg'] ?? 'The Curtain Has Fallen Unexpectedly';
 $error_details = $_GET['details'] ?? 'We couldn\'t find the scene you were looking for. It might have been left on the cutting room floor.';
@@ -12,7 +12,6 @@ $titles = [
     '401' => 'Ticket Required',
     'db'  => 'Archive Connection Lost'
 ];
-
 $display_title = $titles[$error_code] ?? 'Technical Difficulties';
 ?>
 
@@ -183,7 +182,6 @@ $display_title = $titles[$error_code] ?? 'Technical Difficulties';
 </head>
 <body>
     <div class="film-grain"></div>
-
     <div class="page-transition active" id="pageTransition">
         <span class="trans-logo">LUMIÈRE</span>
     </div>
@@ -191,7 +189,6 @@ $display_title = $titles[$error_code] ?? 'Technical Difficulties';
     <div class="error-container">
         <div class="vintage-card error-card">
             <div class="flicker-overlay"></div>
-            
             <div class="corner-dec corner-tl"></div>
             <div class="corner-dec corner-tr"></div>
             <div class="corner-dec corner-bl"></div>
@@ -234,13 +231,14 @@ $display_title = $titles[$error_code] ?? 'Technical Difficulties';
             }
         }
 
-        // Add a slight random jitter to the error code on hover
+        // Add a slight random jitter
         const codeEl = document.querySelector('.error-code');
         codeEl.addEventListener('mousemove', (e) => {
             const rx = (Math.random() - 0.5) * 10;
             const ry = (Math.random() - 0.5) * 10;
             codeEl.style.transform = `translate(${rx}px, ${ry}px)`;
         });
+        
         codeEl.addEventListener('mouseleave', () => {
             codeEl.style.transform = 'translate(0, 0)';
         });

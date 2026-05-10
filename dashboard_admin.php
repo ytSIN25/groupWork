@@ -7,11 +7,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     exit();
 }
 
-
 // Fetch movies owned by this admin
 $admin_id = $_SESSION['user_id'];
 
-// Fetch admin details (name and tier) for the profile display
+// Fetch admin details
 $user_query = "SELECT name, tier, avatar FROM users WHERE user_id = $admin_id";
 $user_result = $conn->query($user_query);
 $user_data = $user_result->fetch_assoc();
@@ -28,7 +27,7 @@ if ($movies_result) {
     }
 }
 
-// Fetch promotions owned by this admin
+// Fetch promotions
 $promos_result = $conn->query("SELECT * FROM promotions WHERE user_id = $admin_id ORDER BY promotion_id DESC");
 $promos = [];
 if ($promos_result) {
@@ -38,8 +37,8 @@ if ($promos_result) {
 }
 
 // --- DYNAMIC REVENUE CALCULATION ---
-// Calculate daily revenue for the current week (Mon-Sun)
-$weekly_revenue = array_fill(0, 7, 0); // 0=Mon, 1=Tue, ..., 6=Sun
+// Calculate daily revenue for the current week
+$weekly_revenue = array_fill(0, 7, 0);
 $rev_query = "
     SELECT 
         WEEKDAY(o.order_date) as day_index,
@@ -82,7 +81,6 @@ if ($movie_rev_result) {
 }
 
 // --- ALL-TIME STATISTICS ---
-// Total Gross Revenue (All Time for this Admin)
 $all_time_rev_query = "
     SELECT 
         SUM(o.total_price) as total_gross,
@@ -379,15 +377,18 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
 
 <body>
     <div class="film-grain"></div>
-    <div class="page-transition active" id="pageTransition"><span class="trans-logo">LUMIÈRE</span></div>
+    <div class="page-transition active" id="pageTransition">
+        <span class="trans-logo">LUMIÈRE</span>
+    </div>
 
     <nav class="lumiere-nav"
         style="background:var(--noir, #0a0a0a); border-bottom:2px solid var(--retro-red, #b22222); display: flex; justify-content: space-between; padding: 15px 5%;">
         <div class="nav-left" style="display:flex; align-items:center;">
-            <a href="index.php" class="lumiere-logo"><img src="assets/images/logo.svg?v=5" alt="LUMIÈRE"
-                    style="height:40px;"></a>
-            <span
-                style="font-family:var(--font-accent, sans-serif); color:var(--retro-red, #b22222); font-size:1.1rem; letter-spacing:0.3em; margin-left:20px; border-left:1px solid #333; padding-left:20px;">DIRECTORATE</span>
+            <a href="index.php" class="lumiere-logo">
+                <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" style="height:40px;">
+            </a>
+
+            <span style="font-family:var(--font-accent, sans-serif); color:var(--retro-red, #b22222); font-size:1.1rem; letter-spacing:0.3em; margin-left:20px; border-left:1px solid #333; padding-left:20px;">DIRECTORATE</span>
         </div>
         <div class="admin-profile" style="display:flex; align-items:center; gap:20px;">
             <div style="text-align:right;">
@@ -414,7 +415,9 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
             <button class="admin-nav-btn" onclick="switchAdmin(event, 'staff')">👥 Staff Directory</button>
 
             <div style="margin-top:auto; padding-top:20px; border-top:1px solid rgba(255,255,255,0.05);">
-                <a href="index.php" class="admin-nav-btn" style="color:var(--mocha, #8b7355);"><span style="font-size:1.2rem;">←</span> Exit to Front</a>
+                <a href="index.php" class="admin-nav-btn" style="color:var(--mocha, #8b7355);">
+                    <span style="font-size:1.2rem;">←</span> Exit to Front
+                </a>
             </div>
         </aside>
 
@@ -431,10 +434,12 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                         <span class="stat-label-admin">Total Gross Revenue</span>
                         <div class="stat-value-admin">RM <?php echo number_format($total_gross_all_time, 0); ?></div>
                     </div>
+
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Admissions Scanned</span>
                         <div class="stat-value-admin"><?php echo number_format($total_admissions_all_time); ?></div>
                     </div>
+                    
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Active Catalog Size</span>
                         <div class="stat-value-admin"><?php echo $active_catalog_size; ?></div>

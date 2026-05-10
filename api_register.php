@@ -15,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
-
 $name     = trim($input['name']  ?? '');
 $email    = trim($input['email'] ?? '');
 $password = $input['password']   ?? '';
@@ -53,7 +52,7 @@ if ($stmt->num_rows > 0) {  // If email is already registered
 }
 $stmt->close();
 
-// Hash the password
+// Hash password
 $hashed = password_hash($password, PASSWORD_DEFAULT);
 
 // Generate avatar URL

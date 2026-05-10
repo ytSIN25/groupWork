@@ -8,10 +8,10 @@ $DB_NAME = 'lumiere_cinema';
 $DB_USER = 'root';
 $DB_PASS = '';
 
-// Standard Ticket Price for all Cinematic Experiences
+// Standard Ticket Price (15)
 define('LUMIERE_BASE_PRICE', 15.00);
 
-// This replaces manual error_reporting(E_ALL) and shows errors in our cinematic error.php
+// This replaces manual error_reporting
 function cinematic_error_handler($level, $message, $file, $line) {
     if (!(error_reporting() & $level)) return;
     $details = "Error: $message\nFile: $file\nLine: $line";
@@ -44,7 +44,7 @@ register_shutdown_function(function() {
 
 set_error_handler("cinematic_error_handler");
 set_exception_handler("cinematic_exception_handler");
-error_reporting(E_ALL); // We catch everything now
+error_reporting(E_ALL);
 
 // mysqli connection
 mysqli_report(MYSQLI_REPORT_OFF); 

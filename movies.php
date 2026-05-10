@@ -19,6 +19,7 @@ if (!isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="css/global.css?v=5">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
 </head>
+
 <body>
     <div class="film-grain"></div>
     <div class="page-transition active" id="pageTransition">
@@ -83,15 +84,13 @@ if (!isset($_SESSION['user_id'])) {
                 <?php 
                 $result = mysqli_query($conn, "SELECT * FROM movies 
                                                WHERE start_date IS NOT NULL 
-                                               AND start_date != '0000-00-00'
-                                               AND CURDATE() >= start_date 
-                                               AND CURDATE() <= DATE_ADD(start_date, INTERVAL 14 DAY)");
+                                                  AND start_date != '0000-00-00'
+                                                  AND CURDATE() >= start_date 
+                                                  AND CURDATE() <= DATE_ADD(start_date, INTERVAL 14 DAY)");
                 while($row = mysqli_fetch_assoc($result)): 
                 ?>
 
-                <div class="movie-card skew-up" 
-                     data-genre="<?= $row['genre'] ?>" 
-                     onclick="window.location.href='movie.php?movie_id=<?= $row['movie_id'] ?>'">
+                <div class="movie-card skew-up" data-genre="<?= $row['genre'] ?>" onclick="window.location.href='movie.php?movie_id=<?= $row['movie_id'] ?>'">
                     <div class="movie-poster-wrap">
                         <img src="<?= $row['poster_path'] ?>" alt="<?= htmlspecialchars($row['movie_name']) ?>">
                     </div>
@@ -125,6 +124,7 @@ if (!isset($_SESSION['user_id'])) {
             <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
         </filter>
     </svg>
+
     <script>
         document.getElementById('searchBtn').addEventListener('click', function() {
             const title = document.getElementById('titleSearch').value.toLowerCase().trim();
@@ -134,11 +134,10 @@ if (!isset($_SESSION['user_id'])) {
             const grid = document.querySelector('.movies-grid');
             const cards = Array.from(document.querySelectorAll('.movie-card'));
 
-            // 1. Filtering Logic
+            // Filtering Logic
             cards.forEach(card => {
                 const cardTitle = card.querySelector('.movie-title').textContent.toLowerCase();
                 const cardGenres = card.getAttribute('data-genre').split(',').map(g => g.trim());
-                
                 const titleMatch = !title || cardTitle.includes(title);
                 const genreMatch = (genre === 'all' || cardGenres.includes(genre));
 
@@ -150,7 +149,7 @@ if (!isset($_SESSION['user_id'])) {
                 }
             });
 
-            // 2. Sorting Logic
+            // Sorting
             if (priceSort !== 'any') {
                 const sortedCards = cards.sort((a, b) => {
                     const valA = parseFloat(a.getAttribute('data-price-value') || 0);

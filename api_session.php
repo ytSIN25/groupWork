@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Fetch fresh user data from database (in case of updates)
+// Fetch user data from database
 $stmt = $conn->prepare('SELECT * FROM users WHERE user_id = ? LIMIT 1');
 $stmt->bind_param('i', $_SESSION['user_id']);
 $stmt->execute();
@@ -28,8 +28,7 @@ if (!$user) {
     exit;
 }
 
-unset($user['password']); // Remove password before sending user data for security
-
+unset($user['password']); // Remove password before sending user data
 echo json_encode([
     'success' => true,
     'user'    => $user,

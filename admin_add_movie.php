@@ -1,7 +1,4 @@
 <?php
-// Error displaying
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 require_once 'config.php';
 
 // Check if user is logged in and is admin
@@ -149,9 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="liquidGlass-shine"></div>
             <div class="liquidGlass-content" style="padding: 50px; position: relative;">
                 <div style="position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px; border: 1px solid var(--mocha); pointer-events: none; opacity: 0.3; border-radius: 4px;"></div>
-                <h2 style="text-align: center; font-size: 2rem; font-style: italic; margin-bottom: 30px; color: var(--bg-deep); border-bottom: 2px solid var(--bg-deep); display: inline-block; padding-bottom: 10px; position: relative; left: 50%; transform: translateX(-50%);">
-                    Acquisition Ledger No. 492
-                </h2>
+                <h2 style="text-align: center; font-size: 2rem; font-style: italic; margin-bottom: 30px; color: var(--bg-deep); border-bottom: 2px solid var(--bg-deep); display: inline-block; padding-bottom: 10px; position: relative; left: 50%; transform: translateX(-50%);">Acquisition Ledger No. 492</h2>
+
                 <form action="#" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label style="color: var(--bg-deep); font-weight: 600;">Picture Title</label>
@@ -291,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script>
         function checkFileSize(input) {
             if (input.files && input.files[0]) {
-                const fileSize = input.files[0].size / 1024 / 1024; // MB
+                const fileSize = input.files[0].size / 1024 / 1024;
                 if (fileSize > 2) {
                     Swal.fire({
                         title: 'Celluloid Too Large',

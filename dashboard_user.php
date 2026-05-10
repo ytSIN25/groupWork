@@ -13,11 +13,13 @@ if (!$stmt) {
     header('Location: error.php?code=db&msg=Registry Query Failed&details=' . urlencode($conn->error));
     exit;
 }
+
 $stmt->bind_param('i', $_SESSION['user_id']);
 if (!$stmt->execute()) {
     header('Location: error.php?code=db&msg=Registry Execution Failed&details=' . urlencode($stmt->error));
     exit;
 }
+
 $user = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
@@ -26,7 +28,7 @@ if (!$user) {
     exit;
 }
 
-// Redirect admin to their own dashboard
+// Redirect admin
 if ($user['role'] === 'admin') {
     header('Location: dashboard_admin.php');
     exit;
@@ -341,7 +343,6 @@ $stmt->close();
 </head>
 
 <body>
-
     <div class="film-grain"></div>
     <div class="page-transition active" id="pageTransition"><span class="trans-logo">LUMIÈRE</span></div>
 
@@ -359,7 +360,6 @@ $stmt->close();
     </nav>
 
     <div class="page-wrapper" style="padding-top:140px; max-width:1400px; margin:0 auto; display:flex; gap:60px;">
-
         <!-- ---------- Sidebar ---------- -->
         <aside class="sidebar fade-up">
             <div style="text-align:center; margin-bottom:40px;">
@@ -386,7 +386,6 @@ $stmt->close();
 
         <!-- ---------- Main content ---------- -->
         <main style="flex:1;">
-
             <!-- ----- Overview ----- -->
             <div id="overview" class="tab-pane active">
                 <div class="section-header fade-up" style="text-align:left;">

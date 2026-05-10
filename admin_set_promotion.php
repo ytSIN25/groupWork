@@ -8,10 +8,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
 }
 
 $message = "";
-$mode = "add"; // default mode
+$mode = "add";
 $target_promo = null;
 
-// 1. Check if we are in EDIT mode
+// Check if in EDIT mode
 if (isset($_GET['id'])) {
     $promo_id = $_GET['id'];
     $stmt = $conn->prepare("SELECT * FROM promotions WHERE promotion_id = ?");
@@ -25,7 +25,7 @@ if (isset($_GET['id'])) {
     }
 }
 
-// 2. Handle POST requests (Create or Update)
+// Handle POST requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $promo_code     = strtoupper(trim($_POST['promo_code']));
     $discount_value = $_POST['discount_value'] ?? 0.00;
@@ -34,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id        = $_SESSION['user_id'];
 
     if ($mode === 'add') {
-        // MINT NEW
         $stmt = $conn->prepare("INSERT INTO promotions (user_id, promo_code, discount_value, description, minimum_spend, is_active) VALUES (?, ?, ?, ?, ?, 1)");
         $stmt->bind_param("isdsd", $user_id, $promo_code, $discount_value, $description, $min_spend);
         if ($stmt->execute()) {
@@ -44,12 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $stmt->close();
     } else {
-        // UPDATE EXISTING
+        // UPDATE
         $stmt = $conn->prepare("UPDATE promotions SET promo_code=?, discount_value=?, description=?, minimum_spend=? WHERE promotion_id=?");
         $stmt->bind_param("sdsdi", $promo_code, $discount_value, $description, $min_spend, $_GET['id']);
         if ($stmt->execute()) {
             $message = "Promotion updated successfully!";
-            // Refresh data
             $target_promo['promo_code'] = $promo_code;
             $target_promo['discount_value'] = $discount_value;
             $target_promo['description'] = $description;
@@ -61,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// 3. Handle Status Toggle (Only in Edit Mode)
+// Handle Status Toggle
 if (isset($_GET['toggle_id'])) {
     $tid = $_GET['toggle_id'];
     $conn->query("UPDATE promotions SET is_active = 1 - is_active WHERE promotion_id = $tid");
@@ -69,17 +67,17 @@ if (isset($_GET['toggle_id'])) {
     exit();
 }
 
-// 4. Handle Deletion (Only in Edit Mode)
+// Deletion
 if (isset($_GET['delete_id'])) {
     $del_id = $_GET['delete_id'];
     $conn->query("DELETE FROM promotions WHERE promotion_id = $del_id");
-    header('Location: dashboard_admin.php'); // Go back to dashboard after delete
+    header('Location: dashboard_admin.php');
     exit();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -162,6 +160,7 @@ if (isset($_GET['delete_id'])) {
                         <?php echo $mode === 'add' ? 'Generate new coupons for patron redemption.' : 'Modifying the ledger entry for ' . htmlspecialchars($target_promo['promo_code']); ?>
                     </p>
                 </div>
+
                 <?php if ($mode === 'edit'): ?>
                     <a href="admin_set_promotion.php" class="btn-primary" style="padding: 8px 20px; font-size: 0.8rem;">+ New Coupon</a>
                 <?php endif; ?>
@@ -177,6 +176,7 @@ if (isset($_GET['delete_id'])) {
                                 placeholder="e.g. GOLD20" required
                                 value="<?php echo $target_promo ? htmlspecialchars($target_promo['promo_code']) : ''; ?>">
                         </div>
+                        
                         <div class="form-group" style="flex: 1;">
                             <label style="color: var(--bg-deep); font-weight: 600;">Discount Value (RM)</label>
                             <input type="number" step="0.01" name="discount_value" class="typewriter-input" 
