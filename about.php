@@ -312,7 +312,7 @@ if (!isset($_SESSION['user_id'])) {
             <p style="font-family: var(--font-calligraphy); font-size: 1.8rem; color: var(--gold); margin: 20px 0;">Where every frame tells a story.</p>
             <div class="footer-links" style="margin-top: 25px;">
                 <a href="movies.php">Now Showing</a>
-                <a href="about.php" style="color: var(--sunset-coral);">The Cinema</a>
+                <a href="about.php">The Cinema</a>
                 <a href="dashboard_user.php">Account</a>
                 <a href="dashboard_admin.php">Staff Area</a>
             </div>
