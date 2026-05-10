@@ -57,7 +57,7 @@ $res = $stmt->get_result();
 
     <div class="page-wrapper timeline-section">
         <div class="timeline">
-            <h2 class="fade-up" style="background:var(--bg-dark); padding:12px 30px; z-index:10; border-radius:6px; text-align:center; border:1px solid rgba(212,168,83,0.15);">Your Cinematographic Journey</h2>
+            <h2 class="fade-up" style="background:var(--bg-dark); padding:12px 30px; z-index:10; border-radius:6px; text-align:center;">Your Cinematographic Journey</h2>
 
             <?php while($order = mysqli_fetch_assoc($res)): 
                 $show_timestamp = strtotime($order['show_date']);
