@@ -504,7 +504,7 @@ $stmt->close();
                         <?php foreach ($promotions as $promo): ?>
                             <div class="coupon-card">
                                 <h3 style="color:var(--gold); font-size:1.6rem; margin-bottom:10px;">
-                                    <?= $promo['discount_value'] ?>% Off
+                                    €<?= number_format($promo['discount_value'], 2) ?> Off
                                 </h3>
                                 <p style="color:var(--mocha); font-style:italic; margin-bottom:20px;">
                                     <?= htmlspecialchars($promo['description'] ?? 'No description') ?>
