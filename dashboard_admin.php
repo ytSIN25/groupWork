@@ -257,7 +257,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
             filter: brightness(1.2);
         }
 
-        /* Tooltip to show the �RM value on hover */
+        /* Tooltip to show the value on hover */
         .bar::after {
             content: attr(data-value);
             position: absolute;

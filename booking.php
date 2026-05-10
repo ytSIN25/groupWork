@@ -401,7 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if(selectedSeats.length===0){
                 list.innerHTML='<li><span style="color:var(--mocha); font-style:italic;">No seats selected</span></li>';
-                total.textContent='RM0.00';
+                total.textContent='€ 0.00';
                 btn.style.opacity='0.5';
                 btn.style.pointerEvents='none';
                 return;}
