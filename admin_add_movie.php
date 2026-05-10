@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $starring     = $_POST['starring'] ?? "";
         $synopsis     = $_POST['synopsis'] ?? "";
         $start_date   = $_POST['start_date'] ?? "";
-        $price        = $_POST['price'] ?? 0.00;
         $auditorium   = $_POST['auditorium'] ?? 0;
         $s1 = $_POST['slot1'] ?? "";
         $s2 = $_POST['slot2'] ?? "";
@@ -68,11 +67,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 // Insert Movie
-                $stmt = $conn->prepare("INSERT INTO movies (movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, price, start_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt = $conn->prepare("INSERT INTO movies (movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, start_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 // Bind parameters
                 if ($stmt) {
-                    $stmt->bind_param("sissssssids", $title, $organiser_id, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $price, $start_date);
+                    $stmt->bind_param("sissssssis", $title, $organiser_id, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $start_date);
 
                     // Execute and get last inserted id
                     if ($stmt->execute()) {
@@ -209,10 +208,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="form-group" style="flex: 1;">
                             <label style="color: var(--bg-deep); font-weight: 600;">Start Date</label>
                             <input type="date" name="start_date" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" required>
-                        </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label style="color: var(--bg-deep); font-weight: 600;">Base Price (RM)</label>
-                            <input type="number" name="price" step="0.01" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha);" placeholder="12.00">
                         </div>
                     </div>
 

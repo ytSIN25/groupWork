@@ -9,8 +9,15 @@ if (!isset($_SESSION['user_id'])) {
 
 // Fetch current user
 $stmt = $conn->prepare('SELECT user_id, name, email, role, tier, avatar, created_at FROM users WHERE user_id = ?');
+if (!$stmt) {
+    header('Location: error.php?code=db&msg=Registry Query Failed&details=' . urlencode($conn->error));
+    exit;
+}
 $stmt->bind_param('i', $_SESSION['user_id']);
-$stmt->execute();
+if (!$stmt->execute()) {
+    header('Location: error.php?code=db&msg=Registry Execution Failed&details=' . urlencode($stmt->error));
+    exit;
+}
 $user = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
@@ -31,8 +38,15 @@ $firstName = explode(' ', $user['name'])[0];
 // ---------- Stats ----------
 // Total orders
 $stmt = $conn->prepare('SELECT COUNT(*) as total FROM orders WHERE user_id = ?');
+if (!$stmt) {
+    header('Location: error.php?code=db&msg=Archive Query Failed&details=' . urlencode($conn->error));
+    exit;
+}
 $stmt->bind_param('i', $userId);
-$stmt->execute();
+if (!$stmt->execute()) {
+    header('Location: error.php?code=db&msg=Archive Execution Failed&details=' . urlencode($stmt->error));
+    exit;
+}
 $totalOrders = (int) $stmt->get_result()->fetch_assoc()['total'];
 $stmt->close();
 
@@ -100,6 +114,10 @@ $stmt->close();
 
 // ---------- User preferences ----------
 $stmt = $conn->prepare('SELECT preferred_seating, preferred_snack, preferred_genre FROM user_preferences WHERE user_id = ?');
+if (!$stmt) {
+    header('Location: error.php?code=db&msg=Preference Archive Missing&details=' . urlencode("The table 'user_preferences' is missing from the database. Please run the provided SQL setup script. Error: " . $conn->error));
+    exit;
+}
 $stmt->bind_param('i', $userId);
 $stmt->execute();
 $preferences = $stmt->get_result()->fetch_assoc();
