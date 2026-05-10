@@ -550,7 +550,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                                         }
                                         ?>
                                     </td>
-                                    <td style="color:var(--gold, #d4a853);">RM<?php echo number_format($m['price'], 2); ?></td>
+                                    <td style="color:var(--gold, #d4a853);">RM<?php echo number_format(LUMIERE_BASE_PRICE, 2); ?></td>
                                     <td style="text-align:right;">
                                         <button class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem; background: var(--gold); color: var(--bg-deep); border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="window.location.href='admin_edit_movie.php?id=<?php echo $m['movie_id']; ?>'">
                                             Edit

@@ -1,6 +1,4 @@
 <?php
-require_once 'config.php';
-
 // Fetch error details from GET parameters or use defaults
 $error_code = $_GET['code'] ?? '404';
 $error_message = $_GET['msg'] ?? 'The Curtain Has Fallen Unexpectedly';

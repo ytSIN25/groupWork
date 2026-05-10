@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS movies (
     description  TEXT,
     poster_path  VARCHAR(255),
     duration     INT,
-    price        DECIMAL(10, 2),
     start_date   DATE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

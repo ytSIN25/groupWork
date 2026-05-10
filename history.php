@@ -10,7 +10,12 @@ $sql = "SELECT o.*, m.movie_name
         FROM orders o 
         JOIN movies m ON o.movie_id = m.movie_id 
         WHERE o.user_id = ? 
-        ORDER BY o.order_id DESC";
+        ORDER BY 
+          CASE WHEN o.show_date >= CURDATE() THEN 0 ELSE 1 END,
+          CASE WHEN o.show_date >= CURDATE() THEN o.show_date END ASC,
+          CASE WHEN o.show_date >= CURDATE() THEN o.show_time END ASC,
+          o.show_date DESC, 
+          o.show_time DESC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $uid);
 $stmt->execute();
@@ -59,7 +64,7 @@ $res = $stmt->get_result();
                 $today_timestamp = strtotime(date('Y-m-d'));
                 $is_passed = $show_timestamp < $today_timestamp;?>
             <div class="timeline-item reveal">
-                <div class="stub-card <?= $is_passed ? 'is-passed' : '' ?>" style="<?= $is_passed ? 'pointer-events: none;' : '' ?>">
+                <div class="stub-card <?= $is_passed ? 'is-passed' : '' ?>" style="<?= $is_passed ? 'pointer-events: none; opacity: 0.5; filter: grayscale(100%);' : '' ?>">
                     <div class="stub-card-inner">
                         <div class="stub-front">
                             <div class="stub-theatre">Lumière Cinema — Paris</div>
@@ -68,7 +73,8 @@ $res = $stmt->get_result();
                             </h3>
 
                             <div class="stub-meta">
-                                <?= date('d M Y', strtotime($order['show_date'])) ?> • <?= substr($order['show_time'], 0, 5) ?> • SEATS: <?= $order['seats'] ?>
+                                <?= date('d M Y', strtotime($order['show_date'])) ?> • <?= substr($order['show_time'], 0, 5) ?> • SEATS: <?= htmlspecialchars($order['seats']) ?><br>
+                                <span style="color:var(--gold); font-family:var(--font-accent); font-style:italic;">TIER: <?= htmlspecialchars($order['ticket_tier'] ?? 'Stalls') ?></span>
                             </div>
 
                             <?php if ($is_passed): ?>
@@ -83,7 +89,7 @@ $res = $stmt->get_result();
                         </div>
                         
                         <div class="stub-back">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://youtu.be/dQw4w9WgXcQ" alt="QR Code" style="width:100px; height:100px; border-radius:8px; margin-bottom:10px;">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://youtu.be/QDia3e12czc" alt="QR Code" style="width:100px; height:100px; border-radius:8px; margin-bottom:10px;">
                             <h3>Digital Pass</h3>
                             <p style="font-size:0.8rem; font-style:italic; opacity:0.6;">Flip to show at the gate</p>
                         </div>

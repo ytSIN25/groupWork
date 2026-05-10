@@ -91,7 +91,6 @@ if (!isset($_SESSION['user_id'])) {
 
                 <div class="movie-card skew-up" 
                      data-genre="<?= $row['genre'] ?>" 
-                     data-price-value="<?= $row['price'] ?>" 
                      onclick="window.location.href='movie.php?movie_id=<?= $row['movie_id'] ?>'">
                     <div class="movie-poster-wrap">
                         <img src="<?= $row['poster_path'] ?>" alt="<?= htmlspecialchars($row['movie_name']) ?>">
@@ -99,7 +98,7 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="movie-info">
                         <h3 class="movie-title"><?= htmlspecialchars($row['movie_name']) ?></h3>
                         <p class="movie-meta"><?= $row['release_year'] ?> · <?= $row['genre'] ?> · <?= $row['duration'] ?>m</p>
-                        <p style="color:var(--sunset-coral);">From RM<?= number_format($row['price'], 2) ?></p>
+                        <p style="color:var(--sunset-coral);">From RM<?= number_format(LUMIERE_BASE_PRICE, 2) ?></p>
                     </div>
                 </div>
                 <?php endwhile; ?>

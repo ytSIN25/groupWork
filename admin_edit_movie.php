@@ -53,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $starring   = $_POST['starring'] ?? '';
     $synopsis   = $_POST['synopsis'] ?? '';
     $duration   = (int)($_POST['duration'] ?? 0);
-    $price      = $_POST['price'] ?? 0;
     $auditorium = $_POST['auditorium'] ?? $current_auditorium;
     
     $s1 = $_POST['slot1'] ?? "";
@@ -93,8 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // 4. Update Movie Table
-            $stmt_up = $conn->prepare("UPDATE movies SET movie_name=?, director=?, genre=?, release_year=?, starring=?, description=?, poster_path=?, duration=?, price=?, start_date=? WHERE movie_id=?"); 
-            $stmt_up->bind_param("sssssssidsi", $title, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $price, $start_date, $movie_id);
+            $stmt_up = $conn->prepare("UPDATE movies SET movie_name=?, director=?, genre=?, release_year=?, starring=?, description=?, poster_path=?, duration=?, start_date=? WHERE movie_id=?"); 
+            $stmt_up->bind_param("ssssssisi", $title, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $start_date, $movie_id);
 
             if ($stmt_up->execute()) {
                 // 5. Sync Showtimes (Update existing or Insert new)
@@ -296,11 +295,6 @@ if (isset($_POST['delete_movie'])) {
                                     <label style="font-size: 0.7rem; color: var(--bg-deep);">Slot 3</label>
                                     <input type="time" name="slot3" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $slot3; ?>" required>
                                 </div>
-                            </div>
-                            
-                            <div class="form-group" style="margin-top: 20px;">
-                                <label style="color: var(--bg-deep); font-weight: 600;">Base Price (RM)</label>
-                                <input type="number" step="0.01" name="price" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha);" value="<?php echo $movie['price']; ?>">
                             </div>
 
                             <button type="submit" class="btn-primary" style="width: 100%; margin-top: 20px; color: var(--bg-deep); border-color: var(--bg-deep);">
