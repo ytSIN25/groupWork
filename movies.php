@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMIÈRE — Now Showing</title>
+    <title>LUMIÈRE - Now Showing</title>
     <meta name="description" content="Browse our curated selection of cinematic masterpieces at LUMIÈRE.">
     <link rel="stylesheet" href="css/base.css?v=5">
     <link rel="stylesheet" href="css/pages/index.css?v=5">

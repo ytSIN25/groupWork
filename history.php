@@ -27,7 +27,7 @@ $res = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMIÈRE — My Tickets</title>
+    <title>LUMIÈRE - My Tickets</title>
     <link rel="stylesheet" href="css/base.css?v=5">
     <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
     <link rel="stylesheet" href="css/pages/footer.css?v=5">
@@ -67,7 +67,7 @@ $res = $stmt->get_result();
                 <div class="stub-card <?= $is_passed ? 'is-passed' : '' ?>" style="<?= $is_passed ? 'pointer-events: none; opacity: 0.5; filter: grayscale(100%);' : '' ?>">
                     <div class="stub-card-inner">
                         <div class="stub-front">
-                            <div class="stub-theatre">Lumière Cinema — Paris</div>
+                            <div class="stub-theatre">Lumière Cinema - Paris</div>
                             <h3 class="stub-title">
                                 <?= htmlspecialchars($order['movie_name']) ?>
                             </h3>

@@ -1,4 +1,4 @@
-# LUMIÈRE — The Art of Cinema
+# LUMIÈRE - The Art of Cinema
 
 LUMIÈRE is a premium, web-based cinema management and patron booking system designed with a vintage aesthetic and modern functional architecture. It serves as a dual-portal application for both cinema administrators (Directors) and patrons (Audience).
 

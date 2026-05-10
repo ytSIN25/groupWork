@@ -177,7 +177,7 @@ if (isset($_POST['delete_movie'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMIÈRE — Edit Celluloid</title>
+    <title>LUMIÈRE - Edit Celluloid</title>
     <link rel="stylesheet" href="css/base.css?v=5">
     <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
     <link rel="stylesheet" href="css/pages/footer.css?v=5">

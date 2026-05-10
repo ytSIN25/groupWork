@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMIÈRE — Reservation</title>
+    <title>LUMIÈRE - Reservation</title>
     <link rel="stylesheet" href="css/base.css?v=5">
     <link rel="stylesheet" href="css/pages/booking.css?v=5">
     <link rel="stylesheet" href="css/pages/footer.css?v=5">
@@ -258,17 +258,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; font-size:1.1rem; color:var(--bg-deep);">
                     <div>
                         <div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Date</div>
-                        <div style="font-weight:600;" id="ticketDate">—</div>
+                        <div style="font-weight:600;" id="ticketDate">-</div>
                     </div>
 
                     <div>
                         <div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Time</div>
-                        <div style="font-weight:600;" id="ticketTime">—</div>
+                        <div style="font-weight:600;" id="ticketTime">-</div>
                     </div>
 
                     <div>
                         <div style="color:var(--mocha); font-style:italic; font-size:0.9rem;">Seats</div>
-                        <div style="font-weight:600;" id="ticketSeats">—</div>
+                        <div style="font-weight:600;" id="ticketSeats">-</div>
                     </div>
 
                     <div>

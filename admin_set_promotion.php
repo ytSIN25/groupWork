@@ -81,7 +81,7 @@ if (isset($_GET['delete_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMIÈRE — <?php echo $mode === 'add' ? 'Issue' : 'Refine'; ?> Promotion</title>
+    <title>LUMIÈRE - <?php echo $mode === 'add' ? 'Issue' : 'Refine'; ?> Promotion</title>
     <link rel="stylesheet" href="css/base.css?v=5">
     <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
     <link rel="stylesheet" href="css/pages/footer.css?v=5">
