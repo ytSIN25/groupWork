@@ -141,7 +141,7 @@ if (isset($_SESSION['user_id'])) {
                                 <div class="tier-price">RM<?= number_format(LUMIERE_BASE_PRICE * 3, 2) ?></div>
                             </button>
                         </div>
-                        <button class="btn-coral" style="width:100%; margin-top:25px; background:linear-gradient(135deg, var(--teal-light), var(--teal-deep));" onclick="proceedToBooking()">Select Seats</button>
+                        <button class="btn-coral" style="width:100%; margin-top:25px; background:linear-gradient(135deg, var(--retro-red), var(--retro-red-glow));" onclick="proceedToBooking()">Select Seats</button>
                         
                         <script>
                             function selectTier(el) {
