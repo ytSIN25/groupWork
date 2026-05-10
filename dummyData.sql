@@ -24,13 +24,13 @@ ALTER TABLE users AUTO_INCREMENT = 2;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- 1. Insert Sample Movies (Owned by Admin ID 1)
-INSERT INTO movies (movie_id, movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, price, start_date) 
+INSERT INTO movies (movie_id, movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, start_date) 
 VALUES 
-(1, 'Oppenheimer', 1, 'Christopher Nolan', 'Historical', 2023, 'Cillian Murphy', 'Atomic bomb biography.', 'assets/images/poster-oppenheimer.png', 180, 12.00, '2026-05-03'),
-(2, 'Dune: Part Two', 1, 'Denis Villeneuve', 'Sci-Fi', 2024, 'Zendaya', 'Desert epic.', 'assets/images/poster-dune.png', 166, 15.00, '2026-05-08'),
-(3, 'Nosferatu', 1, 'Robert Eggers', 'Horror', 2024, 'Bill Skarsgård', 'Gothic horror.', 'assets/images/poster-nosferatu.png', 125, 12.50, '2026-05-11'),
-(4, 'Interstellar', 1, 'Christopher Nolan', 'Sci-Fi', 2014, 'Matthew McConaughey', 'Space travel.', 'assets/images/poster-interstellar.png', 169, 10.00, '2026-04-18'),
-(5, 'Blade Runner 2049', 1, 'Denis Villeneuve', 'Sci-Fi', 2017, 'Ryan Gosling', 'Neon detective.', 'assets/images/poster-bladerunner.png', 164, 15.00, '2026-04-28');
+(1, 'Oppenheimer', 1, 'Christopher Nolan', 'Historical', 2023, 'Cillian Murphy', 'Atomic bomb biography.', 'assets/images/poster-oppenheimer.png', 180, '2026-05-03'),
+(2, 'Dune: Part Two', 1, 'Denis Villeneuve', 'Sci-Fi', 2024, 'Zendaya', 'Desert epic.', 'assets/images/poster-dune.png', 166, '2026-05-08'),
+(3, 'Nosferatu', 1, 'Robert Eggers', 'Horror', 2024, 'Bill Skarsgård', 'Gothic horror.', 'assets/images/poster-nosferatu.png', 125, '2026-05-11'),
+(4, 'Interstellar', 1, 'Christopher Nolan', 'Sci-Fi', 2014, 'Matthew McConaughey', 'Space travel.', 'assets/images/poster-interstellar.png', 169, '2026-04-18'),
+(5, 'Blade Runner 2049', 1, 'Denis Villeneuve', 'Sci-Fi', 2017, 'Ryan Gosling', 'Neon detective.', 'assets/images/poster-bladerunner.png', 164, '2026-04-28');
 
 -- 2. Insert Showtimes
 INSERT INTO showtimes (movie_id, auditorium_number, start_time)
