@@ -338,7 +338,7 @@ $stmt->close();
             align-items: center;
         }
 
-        .star-display { color: var(--gold); letter-spacing: 2px; }
+        .star-display { color: var(--sunset-coral); letter-spacing: 2px; }
     </style>
 </head>
 
@@ -541,7 +541,7 @@ $stmt->close();
                                     <div class="star-display">
                                         <?= str_repeat('★', (int)$rating['star_num']) . str_repeat('☆', 5 - (int)$rating['star_num']) ?>
                                     </div>
-                                    <h3><?= htmlspecialchars($rating['movie_name']) ?></h3>
+                                    <strong style="font-family:var(--font-display); font-style:italic; font-size:1.2rem; color:var(--cream);"><?= htmlspecialchars($rating['movie_name']) ?></strong>
                                     <?php if ($rating['content']): ?>
                                         <p class="review-text">"<?= htmlspecialchars($rating['content']) ?>"</p>
                                     <?php endif; ?>
