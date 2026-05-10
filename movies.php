@@ -44,7 +44,7 @@ if (!isset($_SESSION['user_id'])) {
         <section class="movies-section" style="padding-top: 40px;">
             <div class="dashboard-header" style="max-width: 900px; margin: 0 auto 30px; border-radius: 15px; min-height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); position: relative; overflow: hidden; background: var(--bg-deep);">
                 <img src="assets/images/hero-bg.png" alt="" class="bg-img" style="width: 100%; height: 100%; object-fit: cover; object-position: center 30%; position: absolute; top: 0; left: 0; filter: brightness(0.4) saturate(1.2);">
-                <div style="position: absolute; inset: 0; background: radial-gradient(circle, transparent 20%, var(--bg-deep) 95%), linear-gradient(to bottom, transparent 50%, var(--bg-deep) 100%); z-index: 1;"></div>
+                <div style="position: absolute; inset: 0; background: radial-gradient(  ellipse at center,  transparent 20%,  rgba(0, 0, 0, 0.1) 40%,  var(--bg-deep) 70%); z-index: 1;"></div>
                 
                 <h1 class="blur-in" style="position: relative; z-index: 2; margin: 0; font-size: 4rem; text-shadow: 0 0 30px rgba(0,0,0,0.8), 0 5px 15px rgba(0,0,0,0.5); color: #fff;">The Grand Foyer</h1>
                 <p style="font-family:var(--font-accent); font-size:1.5rem; color:var(--gold); font-style:italic; position:relative; z-index:2; margin: 15px 0 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8);" class="text-reveal" data-delay="300">Discover the magic of the silver screen</p>
