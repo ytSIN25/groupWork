@@ -122,7 +122,7 @@ if (isset($_SESSION['user_id'])) {
                                     <div class="tier-name">Stalls</div>
                                     <div style="font-size:0.9rem; color:var(--mocha); font-style:italic;">Main level</div>
                                 </div>
-                                <div class="tier-price">RM<?= number_format(LUMIERE_BASE_PRICE, 2) ?></div>
+                                <div class="tier-price">€<?= number_format(LUMIERE_BASE_PRICE, 2) ?></div>
                             </button>
 
                             <button type="button" class="ticket-tier <?= ($user_pref_tier === 'Circle') ? 'selected' : '' ?>" data-tier="Circle" onclick="selectTier(this)">
@@ -130,7 +130,7 @@ if (isset($_SESSION['user_id'])) {
                                     <div class="tier-name">Circle</div>
                                     <div style="font-size:0.9rem; color:var(--mocha); font-style:italic;">Balcony view</div>
                                 </div>
-                                <div class="tier-price">RM<?= number_format(LUMIERE_BASE_PRICE * 1.5, 2) ?></div>
+                                <div class="tier-price">€<?= number_format(LUMIERE_BASE_PRICE * 1.5, 2) ?></div>
                             </button>
 
                             <button type="button" class="ticket-tier <?= ($user_pref_tier === 'Royal Box') ? 'selected' : '' ?>" data-tier="Royal Box" onclick="selectTier(this)">
@@ -138,7 +138,7 @@ if (isset($_SESSION['user_id'])) {
                                     <div class="tier-name">Royal Box</div>
                                     <div style="font-size:0.9rem; color:var(--mocha); font-style:italic;">Private booth</div>
                                 </div>
-                                <div class="tier-price">RM<?= number_format(LUMIERE_BASE_PRICE * 3, 2) ?></div>
+                                <div class="tier-price">€<?= number_format(LUMIERE_BASE_PRICE * 3, 2) ?></div>
                             </button>
                         </div>
                         <button class="btn-coral" style="width:100%; margin-top:25px; background:linear-gradient(135deg, var(--retro-red), var(--retro-red-glow));" onclick="proceedToBooking()">Select Seats</button>

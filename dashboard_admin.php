@@ -432,7 +432,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                     style="display:grid; grid-template-columns:repeat(3, 1fr); gap:30px; margin-bottom:60px;">
                     <div class="stat-card-premium">
                         <span class="stat-label-admin">Total Gross Revenue</span>
-                        <div class="stat-value-admin">RM <?php echo number_format($total_gross_all_time, 0); ?></div>
+                        <div class="stat-value-admin">€ <?php echo number_format($total_gross_all_time, 0); ?></div>
                     </div>
 
                     <div class="stat-card-premium">
@@ -459,7 +459,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                                     $height = ($rev / $max_rev) * 100;
                                     $color = ($idx >= 3 && $idx <= 5) ? 'var(--retro-red, #b22222)' : 'var(--gold, #d4a853)';
                                 ?>
-                                    <div class="bar" style="height: <?php echo $height; ?>%; background: <?php echo $color; ?>;" data-value="RM<?php echo number_format($rev, 0); ?>"></div>
+                                    <div class="bar" style="height: <?php echo $height; ?>%; background: <?php echo $color; ?>;" data-value="€<?php echo number_format($rev, 0); ?>"></div>
                                 <?php endforeach; ?>
                             </div>
                             <div style="display:flex; justify-content:space-around; margin-top:10px; font-family:var(--font-accent, sans-serif); color:var(--mocha, #8b7355); font-size: 0.85rem;">
@@ -555,7 +555,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                                         }
                                         ?>
                                     </td>
-                                    <td style="color:var(--gold, #d4a853);">RM<?php echo number_format(LUMIERE_BASE_PRICE, 2); ?></td>
+                                    <td style="color:var(--gold, #d4a853);">€<?php echo number_format(LUMIERE_BASE_PRICE, 2); ?></td>
                                     <td style="text-align:right;">
                                         <button class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem; background: var(--gold); color: var(--bg-deep); border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="window.location.href='admin_edit_movie.php?id=<?php echo $m['movie_id']; ?>'">
                                             Edit
@@ -605,8 +605,8 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                                         <div style="color: var(--cream, #fff); font-weight: 600;"><?php echo htmlspecialchars($p['description']); ?></div>
                                     </td>
                                     <td style="font-family: monospace; letter-spacing: 0.1em; color: var(--gold);"><?php echo htmlspecialchars($p['promo_code']); ?></td>
-                                    <td style="color: var(--cream-dim);">-RM<?php echo number_format($p['discount_value'], 2); ?></td>
-                                    <td style="color: var(--mocha);">RM<?php echo number_format($p['minimum_spend'], 2); ?></td>
+                                    <td style="color: var(--cream-dim);">-€<?php echo number_format($p['discount_value'], 2); ?></td>
+                                    <td style="color: var(--mocha);">€<?php echo number_format($p['minimum_spend'], 2); ?></td>
                                     <td style="text-align:right;">
                                         <button class="btn-primary" style="padding: 5px 15px; font-size: 0.8rem; background: var(--gold); color: var(--bg-deep); border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="window.location.href='admin_set_promotion.php?id=<?php echo $p['promotion_id']; ?>'">
                                             Manage

@@ -106,7 +106,7 @@ $members_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as tota
                 <div class="movie-info">
                     <h3 class="movie-title"><?= htmlspecialchars($row['movie_name']) ?></h3>
                     <p class="movie-meta"><?= $row['release_year'] ?> · <?= $row['genre'] ?> · <?= $row['duration'] ?>m</p>
-                    <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From RM<?= number_format(LUMIERE_BASE_PRICE, 2) ?></p>
+                    <p style="color:var(--sunset-coral); font-size:0.95rem; margin-top:8px; font-family:var(--font-accent);">★★★★★ · From €<?= number_format(LUMIERE_BASE_PRICE, 2) ?></p>
                 </div>
             </div>
 

@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li><span style="color:var(--mocha); font-style:italic;">No seats selected</span></li>
                 </ul>
                 <ul class="booking-summary-list" style="border-top:1px solid rgba(212,168,83,0.1);">
-                    <li class="booking-total">Total <span id="totalPrice">RM 0.00</span></li>
+                    <li class="booking-total">Total <span id="totalPrice">€ 0.00</span></li>
                 </ul>
                 <button class="btn-primary" style="width:100%; margin-top:10px; opacity:0.5; pointer-events:none;" id="step1Btn" onclick="nextStep(2)">Continue</button>
             </div>
@@ -407,8 +407,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return;}
             btn.style.opacity='1';
             btn.style.pointerEvents='auto';
-            selectedSeats.forEach(s=>{const li=document.createElement('li');li.innerHTML=`<span>Seat ${s}</span><span>RM${PRICE}.00</span>`;list.appendChild(li);});
-            total.textContent=`RM${(selectedSeats.length*PRICE).toFixed(2)}`;
+            selectedSeats.forEach(s=>{const li=document.createElement('li');li.innerHTML=`<span>Seat ${s}</span><span>€${PRICE}.00</span>`;list.appendChild(li);});
+            total.textContent=`€${(selectedSeats.length*PRICE).toFixed(2)}`;
             document.getElementById('ticketSeats').textContent=selectedSeats.join(', ');}
             updateSummary();
 

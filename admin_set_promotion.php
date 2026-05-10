@@ -178,7 +178,7 @@ if (isset($_GET['delete_id'])) {
                         </div>
                         
                         <div class="form-group" style="flex: 1;">
-                            <label style="color: var(--bg-deep); font-weight: 600;">Discount Value (RM)</label>
+                            <label style="color: var(--bg-deep); font-weight: 600;">Discount Value (€)</label>
                             <input type="number" step="0.01" name="discount_value" class="typewriter-input" 
                                 style="color: var(--bg-deep);" placeholder="5.00" required
                                 value="<?php echo $target_promo ? $target_promo['discount_value'] : ''; ?>">
@@ -193,7 +193,7 @@ if (isset($_GET['delete_id'])) {
                     </div>
 
                     <div class="form-group">
-                        <label style="color: var(--bg-deep); font-weight: 600;">Minimum Spend (RM)</label>
+                        <label style="color: var(--bg-deep); font-weight: 600;">Minimum Spend (€)</label>
                         <input type="number" step="0.01" name="minimum_spend" class="typewriter-input" 
                             style="color: var(--bg-deep);" placeholder="0.00"
                             value="<?php echo $target_promo ? $target_promo['minimum_spend'] : ''; ?>">
