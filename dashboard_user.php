@@ -483,7 +483,7 @@ $stmt->close();
                                 <div class="qr-placeholder" style="width:60px; height:60px; margin-bottom:10px;"></div>
                                 <span style="font-family:'Courier New', monospace; font-size:0.75rem; font-weight:bold;">#LX-<?= str_pad($ticket['order_id'], 5, '0', STR_PAD_LEFT) ?></span>
                                 <span style="font-family:var(--font-accent); font-size:0.8rem; margin-top:5px; color:var(--gold);">
-                                    $<?= number_format($ticket['total_price'], 2) ?>
+                                    €<?= number_format($ticket['total_price'], 2) ?>
                                 </span>
                             </div>
                         </div>
@@ -511,7 +511,7 @@ $stmt->close();
                                 </p>
                                 <?php if ($promo['minimum_spend'] > 0): ?>
                                     <p style="color:var(--mocha); font-size:0.85rem; margin-bottom:10px;">
-                                        Minimum spend: $<?= number_format($promo['minimum_spend'], 2) ?>
+                                        Minimum spend: €<?= number_format($promo['minimum_spend'], 2) ?>
                                     </p>
                                 <?php endif; ?>
                                 <div style="font-family:monospace; font-size:1.1rem; border-top:1px dashed rgba(212,168,83,0.3); padding-top:12px; letter-spacing:0.15em;">
@@ -565,7 +565,7 @@ $stmt->close();
                                     </p>
                                 </div>
                                 <span style="font-family:var(--font-accent); color:var(--gold); font-size:1.1rem;">
-                                    $<?= number_format($order['total_price'], 2) ?>
+                                    €<?= number_format($order['total_price'], 2) ?>
                                 </span>
                             </div>
                         <?php endforeach; ?>
