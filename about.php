@@ -14,10 +14,10 @@ if (!isset($_SESSION['user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Learn about the heritage and restoration of LUMIÈRE Cinemas.">
     <title>LUMIÈRE - Our Philosophy & Heritage</title>
-    <link rel="stylesheet" href="css/base.css?v=5">
-    <link rel="stylesheet" href="css/pages/index.css?v=5">
-    <link rel="stylesheet" href="css/pages/footer.css?v=5">
-    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pages/index.css">
+    <link rel="stylesheet" href="css/pages/footer.css">
+    <link rel="stylesheet" href="css/global.css">
     <style>
         /* Specific About Page Styles */
         .about-hero {
@@ -233,7 +233,7 @@ if (!isset($_SESSION['user_id'])) {
     <!-- Navigation -->
     <nav class="lumiere-nav">
         <a href="index.php" class="lumiere-logo" data-no-transition>
-            <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE">
+            <img src="assets/images/logo.svg" alt="LUMIÈRE">
         </a>
         <div class="nav-links">
             <a href="index.php" class="nav-link">Home</a>
@@ -308,7 +308,7 @@ if (!isset($_SESSION['user_id'])) {
 
         <!-- Footer -->
         <footer>
-            <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" class="logo-img">
+            <img src="assets/images/logo.svg" alt="LUMIÈRE" class="logo-img">
             <p style="font-family: var(--font-calligraphy); font-size: 1.8rem; color: var(--gold); margin: 20px 0;">Where every frame tells a story.</p>
             <div class="footer-links" style="margin-top: 25px;">
                 <a href="movies.php">Now Showing</a>
@@ -321,7 +321,7 @@ if (!isset($_SESSION['user_id'])) {
 
     </div>
 
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js"></script>
     <script>
         // Stats Counter Animation
         function animateCounter(el, target, dur) {
