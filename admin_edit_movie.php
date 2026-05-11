@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 4. Update Movie Table
             $stmt_up = $conn->prepare("UPDATE movies SET movie_name=?, director=?, genre=?, release_year=?, starring=?, description=?, poster_path=?, duration=?, start_date=? WHERE movie_id=?"); 
-            $stmt_up->bind_param("ssssssisi", $title, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $start_date, $movie_id);
+            $stmt_up->bind_param("sssssssisi", $title, $director, $genre, $year, $starring, $synopsis, $poster_path, $duration, $start_date, $movie_id);
 
             if ($stmt_up->execute()) {
                 // 5. Sync Showtimes (Update existing or Insert new)
