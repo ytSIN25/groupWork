@@ -15,10 +15,10 @@ $members_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as tota
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMIÈRE - Where Every Seat Tells a Story</title>
     <meta name="description" content="LUMIÈRE vintage cinema - experience the golden age of Hollywood. Browse curated screenings, reserve your seat, and immerse yourself in cinematic magic.">
-    <link rel="stylesheet" href="css/base.css?v=5">
-    <link rel="stylesheet" href="css/pages/index.css?v=5">
-    <link rel="stylesheet" href="css/pages/footer.css?v=5">
-    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pages/index.css">
+    <link rel="stylesheet" href="css/pages/footer.css">
+    <link rel="stylesheet" href="css/global.css">
 </head>
 
 <body>
