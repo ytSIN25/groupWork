@@ -55,6 +55,10 @@
   background: linear-gradient(to bottom, var(--gold), var(--sunset-coral), var(--sunset-lavender));
 }
 
+.timeline-empty::before {
+  display: none;
+}
+
 .timeline-item {
   width: 42%;
   position: relative;

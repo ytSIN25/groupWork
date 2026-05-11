@@ -7,11 +7,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $uid = $_SESSION['user_id'];
 
-// --- NEW REFUND LOGIC ---
+// Handle refund request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refund_order_id'])) {
     $order_to_refund = $_POST['refund_order_id'];
     
-    // Security: Only delete if it belongs to the user and is a future show
+    // Ensure the order belongs to the user and is for a future show
     $delete_sql = "DELETE FROM orders WHERE order_id = ? AND user_id = ? AND show_date >= CURDATE()";
     $del_stmt = $conn->prepare($delete_sql);
     $del_stmt->bind_param("ii", $order_to_refund, $uid);
@@ -19,8 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refund_order_id'])) {
     if ($del_stmt->execute()) {
         $msg = "Ticket refunded successfully.";
     }
-    // Refresh the page to update the list
-    header("Location: history.php"); 
+    header("Location: history.php");  // Redirect to refresh the page and prevent form resubmission
     exit();
 }
 
@@ -38,6 +37,7 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $uid);
 $stmt->execute();
 $res = $stmt->get_result();
+$orders = mysqli_fetch_all($res, MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -82,7 +82,6 @@ $res = $stmt->get_result();
             z-index: 5;
         }
 
-        /* --- Custom Confirmation Modal --- */
         .lumiere-modal-overlay {
             position: fixed;
             top: 0;
@@ -213,57 +212,64 @@ $res = $stmt->get_result();
     </nav>
 
     <div class="page-wrapper timeline-section">
-        <div class="timeline">
+        <div class="timeline <?= empty($orders) ? 'timeline-empty' : '' ?>">
             <h2 class="fade-up" style="background:var(--bg-dark); padding:12px 30px; z-index:10; border-radius:6px; text-align:center;">Your Cinematographic Journey</h2>
 
-            <?php while($order = mysqli_fetch_assoc($res)): 
-                $show_timestamp = strtotime($order['show_date']);
-                $today_timestamp = strtotime(date('Y-m-d'));
-                $is_passed = $show_timestamp < $today_timestamp;?>
-            <div class="timeline-item reveal">
-                <div class="stub-card <?= $is_passed ? 'is-passed' : '' ?>" style="<?= $is_passed ? 'pointer-events: none; opacity: 0.5; filter: grayscale(100%);' : '' ?>">
-                    <div class="stub-card-inner">
-                        <div class="stub-front">
-                            <div class="stub-theatre">Lumière Cinema - Paris</div>
-                            <h3 class="stub-title">
-                                <?= htmlspecialchars($order['movie_name']) ?>
-                            </h3>
+            <?php if (empty($orders)): ?>
+                <div style="text-align:center; padding: 80px 20px;">
+                    <p style="font-family: var(--font-accent); color: var(--mocha); font-size: 1.5rem; font-style: italic; margin-bottom: 20px;">No tickets found.</p>
+                    <a href="movies.php" class="btn-coral">Browse Movies</a>
+                </div>
+            <?php else: ?>
+                <?php foreach($orders as $order):
+                    $show_timestamp = strtotime($order['show_date']);
+                    $today_timestamp = strtotime(date('Y-m-d'));
+                    $is_passed = $show_timestamp < $today_timestamp;?>
+                <div class="timeline-item reveal">
+                    <div class="stub-card <?= $is_passed ? 'is-passed' : '' ?>" style="<?= $is_passed ? 'pointer-events: none; opacity: 0.5; filter: grayscale(100%);' : '' ?>">
+                        <div class="stub-card-inner">
+                            <div class="stub-front">
+                                <div class="stub-theatre">Lumière Cinema - Paris</div>
+                                <h3 class="stub-title">
+                                    <?= htmlspecialchars($order['movie_name']) ?>
+                                </h3>
 
-                            <div class="stub-meta">
-                                <?= date('d M Y', strtotime($order['show_date'])) ?> • <?= substr($order['show_time'], 0, 5) ?> • SEATS: <?= htmlspecialchars($order['seats']) ?><br>
-                                <span style="color:var(--gold); font-family:var(--font-accent); font-style:italic;">TIER: <?= htmlspecialchars($order['ticket_tier'] ?? 'Stalls') ?></span>
+                                <div class="stub-meta">
+                                    <?= date('d M Y', strtotime($order['show_date'])) ?> • <?= substr($order['show_time'], 0, 5) ?> • SEATS: <?= htmlspecialchars($order['seats']) ?><br>
+                                    <span style="color:var(--gold); font-family:var(--font-accent); font-style:italic;">TIER: <?= htmlspecialchars($order['ticket_tier'] ?? 'Stalls') ?></span>
+                                </div>
+
+                                <?php if ($is_passed): ?>
+                                    <div style="margin-top:10px; font-weight:700; color:#888; border:1px solid #888; padding:2px 8px; font-size:0.75rem; border-radius:3px; display:inline-block; opacity:0.7;">
+                                        PASSED
+                                    </div>
+                                <?php else: ?>
+                                    <div style="margin-top:10px; font-weight:700; color:var(--retro-red); border:1px solid var(--retro-red); padding:2px 8px; font-size:0.75rem; border-radius:3px; display:inline-block;">
+                                        CONFIRMED
+                                    </div>
+                                <?php endif; ?>
                             </div>
-
-                            <?php if ($is_passed): ?>
-                                <div style="margin-top:10px; font-weight:700; color:#888; border:1px solid #888; padding:2px 8px; font-size:0.75rem; border-radius:3px; display:inline-block; opacity:0.7;">
-                                    PASSED
-                                </div>
-                            <?php else: ?>
-                                <div style="margin-top:10px; font-weight:700; color:var(--retro-red); border:1px solid var(--retro-red); padding:2px 8px; font-size:0.75rem; border-radius:3px; display:inline-block;">
-                                    CONFIRMED
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <div class="stub-back">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://youtu.be/QDia3e12czc" alt="QR Code" style="width:80px; height:80px; border-radius:8px; margin-bottom:8px;">
-                            <h3>Digital Pass</h3>
                             
-                            <?php if (!$is_passed): ?>
-                                <form method="POST" class="refund-form">
-                                    <input type="hidden" name="refund_order_id" value="<?= $order['order_id'] ?>">
-                                    <button type="button" class="refund-btn" onclick="showRefundConfirm(this.form)">Refund Ticket</button>
-                                </form>
-                            <?php else: ?>
-                                <p style="font-size:0.75rem; color:var(--retro-red); border:1px solid; padding:2px 5px;">EXPIRED</p>
-                            <?php endif; ?>
-                            
-                            <p style="font-size:0.7rem; font-style:italic; opacity:0.6; margin-top:5px;">Flip to show at the gate</p>
+                            <div class="stub-back">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://youtu.be/QDia3e12czc" alt="QR Code" style="width:80px; height:80px; border-radius:8px; margin-bottom:8px;">
+                                <h3>Digital Pass</h3>
+                                
+                                <?php if (!$is_passed): ?>
+                                    <form method="POST" class="refund-form">
+                                        <input type="hidden" name="refund_order_id" value="<?= $order['order_id'] ?>">
+                                        <button type="button" class="refund-btn" onclick="showRefundConfirm(this.form)">Refund Ticket</button>
+                                    </form>
+                                <?php else: ?>
+                                    <p style="font-size:0.75rem; color:var(--retro-red); border:1px solid; padding:2px 5px;">EXPIRED</p>
+                                <?php endif; ?>
+                                
+                                <p style="font-size:0.7rem; font-style:italic; opacity:0.6; margin-top:5px;">Flip to show at the gate</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <?php endwhile; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 
