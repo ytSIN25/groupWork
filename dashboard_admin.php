@@ -695,7 +695,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                                 let label = context.label || '';
                                 if (label) label += ': ';
                                 if (context.parsed !== null) {
-                                    label += new Intl.NumberFormat('en-MY', { style: 'currency', currency: 'MYR' }).format(context.parsed);
+                                    label += new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR' }).format(context.parsed);
                                 }
                                 return label;
                             }
