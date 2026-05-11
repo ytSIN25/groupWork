@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = json_decode(file_get_contents('php://input'), true);
 
-$email    = trim($input['email']    ?? '');
-$password = $input['password']      ?? '';
+$email    = trim($input['email'] ?? '');
+$password = $input['password']   ?? '';
 
 if ($email === '' || $password === '') {
     http_response_code(400);
