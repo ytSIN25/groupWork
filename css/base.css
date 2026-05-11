@@ -576,7 +576,7 @@ a:hover {
 .btn-coral {
   display: inline-block;
   background: linear-gradient(135deg, var(--sunset-coral), var(--sunset-rose));
-  color: #fff;
+  color: #fff !important;
   border: none;
   padding: 14px 40px;
   font-family: var(--font-accent);
