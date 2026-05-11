@@ -576,7 +576,7 @@ a:hover {
 .btn-coral {
   display: inline-block;
   background: linear-gradient(135deg, var(--sunset-coral), var(--sunset-rose));
-  color: #fff !important;
+  color: #fff;
   border: none;
   padding: 14px 40px;
   font-family: var(--font-accent);
@@ -620,6 +620,7 @@ a:hover {
 }
 
 .btn-coral:hover {
+  color: #fff !important;
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 16px 45px rgba(232, 115, 90, 0.65);
 }
