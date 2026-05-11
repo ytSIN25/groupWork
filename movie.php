@@ -117,80 +117,85 @@ $critic_reviews = [
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     .lumiere-swal-popup {
-      background: rgb(26, 21, 32) !important;
-      border: 1px solid rgba(212, 168, 83, 0.12) !important;
-      border-top: 2px solid #d4a853 !important;
-      border-radius: 6px !important;
-      font-family: inherit !important;
-      padding: 44px 40px 36px !important;
-      max-width: 400px !important;
-      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7) !important;
+      background: rgb(26, 21, 32);
+      border-radius: 6px;
+      font-family: inherit;
+      padding: 15px 40px 25px;
+      max-width: 450px ;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7) ;
+      position: relative;
+      overflow: hidden;
+    }
+
+      .lumiere-swal-popup::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--sunset-coral));
     }
 
     .lumiere-swal-title {
-      font-family: var(--font-display, 'Playfair Display', serif) !important;
-      color: var(--cream, #f5f0eb) !important;
-      font-size: 1.55rem !important;
-      font-weight: 700 !important;
-      letter-spacing: 0.3px !important;
-      padding: 0 !important;
-      margin: 0 0 14px !important;
-      line-height: 1.2 !important;
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--gold);
+      font-style: italic;
+      font-weight: 400;
     }
 
     .lumiere-swal-html {
-      color: var(--mocha, #8b7355) !important;
-      font-size: 0.92rem !important;
-      line-height: 1.75 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      text-align: left !important;
+      color: #ddd;
+      font-size: 1rem;
+      line-height: 1.5;
+      opacity: 0.8;
     }
 
     .lumiere-swal-actions {
-      justify-content: flex-start !important;
-      margin-top: 28px !important;
-      padding: 0 !important;
-      gap: 10px !important;
+      justify-content: flex-start ;
+      margin-top: 28px ;
+      padding: 0 ;
+      gap: 10px ;
     }
 
     .lumiere-swal-confirm {
-      background: #E8735A !important;
-      border: none !important;
-      border-radius: 4px !important;
-      color: #fff !important;
-      font-family: inherit !important;
-      font-size: 0.7rem !important;
-      font-weight: 700 !important;
-      letter-spacing: 2px !important;
-      text-transform: uppercase !important;
-      padding: 12px 26px !important;
-      box-shadow: none !important;
-      transition: opacity 0.2s ease !important;
+      padding: 12px 25px;
+      border-radius: 6px;
+      font-family: var(--font-accent);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 120px;
+      background: var(--sunset-coral);
+      border: none;
+      color: white;
     }
-    .lumiere-swal-confirm:hover  { opacity: 0.88 !important; box-shadow: none !important; }
-    .lumiere-swal-confirm:focus  { box-shadow: none !important; }
+    .lumiere-swal-confirm:hover  { background: #f65d3f; box-shadow: 0 0 20px rgba(239, 125, 99, 0.4) !important; transform: translateY(-2px); }
+    .lumiere-swal-confirm:focus  { box-shadow: none ; }
 
     .lumiere-swal-cancel {
-      background: transparent !important;
-      border: 1px solid rgba(212, 168, 83, 0.2) !important;
-      color: var(--mocha, #8b7355) !important;
-      border-radius: 4px !important;
-      font-family: inherit !important;
-      font-size: 0.7rem !important;
-      font-weight: 700 !important;
-      letter-spacing: 2px !important;
-      text-transform: uppercase !important;
-      padding: 12px 26px !important;
-      box-shadow: none !important;
-      transition: border-color 0.2s ease, color 0.2s ease !important;
+      padding: 12px 25px;
+      border-radius: 6px;
+      font-family: var(--font-accent);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 120px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
     }
-    .lumiere-swal-cancel:hover  { border-color: rgba(212, 168, 83, 0.45) !important; color: var(--cream, #f5f0eb) !important; box-shadow: none !important; }
-    .lumiere-swal-cancel:focus  { box-shadow: none !important; }
+    .lumiere-swal-cancel:hover  { background: rgba(255, 255, 255, 0.05); border-color: white; }
+    .lumiere-swal-cancel:focus  { box-shadow: none ; }
 
     .swal2-backdrop-show {
-      background: rgba(0, 0, 0, 0.82) !important;
-      backdrop-filter: blur(3px) !important;
+      background: rgba(0, 0, 0, 0.82) ;
+      backdrop-filter: blur(3px) ;
     }
   </style>
 </head>
