@@ -105,7 +105,7 @@ $res = $stmt->get_result();
         }
 
         .lumiere-modal {
-            background: var(--bg-card);
+            background: rgb(26, 21, 32);
             border: 1px solid rgba(212, 168, 83, 0.2);
             padding: 40px;
             border-radius: 12px;
