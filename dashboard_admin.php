@@ -484,7 +484,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                         <button class="btn-primary" style="padding:6px 18px; font-size:0.85rem; background:none; border:1px solid var(--gold); color:var(--gold); border-radius:4px; cursor:pointer;" onclick="switchAdmin(event, 'catalog'); setActiveNav('catalog')">Manage</button>
                     </div>
 
-                    <div style="display:flex; gap:20px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: thin; scrollbar-color: var(--gold) transparent;">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:20px;">
                         <?php if (empty($movies)): ?>
                             <p style="color: var(--mocha); width: 100%; text-align: center; padding: 40px;">No movies in repertoire.</p>
                         <?php else: ?>
