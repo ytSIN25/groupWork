@@ -82,10 +82,10 @@ if (isset($_GET['delete_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMIÈRE - <?php echo $mode === 'add' ? 'Issue' : 'Refine'; ?> Promotion</title>
-    <link rel="stylesheet" href="css/base.css?v=5">
-    <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
-    <link rel="stylesheet" href="css/pages/footer.css?v=5">
-    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pages/dashboard.css">
+    <link rel="stylesheet" href="css/pages/footer.css">
+    <link rel="stylesheet" href="css/global.css">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <style>
         .edit-controls {
@@ -138,7 +138,7 @@ if (isset($_GET['delete_id'])) {
 
     <nav class="lumiere-nav" style="padding: 15px 5%;">
         <a href="dashboard_admin.php" class="lumiere-logo" style="gap: 10px;">
-            <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" style="height: 40px;">
+            <img src="assets/images/logo.svg" alt="LUMIÈRE" style="height: 40px;">
             <span style="font-family: var(--font-accent); font-size: 1rem; color: var(--mocha); letter-spacing: 0.2em;">STAFF</span>
         </a>
         <div class="nav-links">
@@ -227,7 +227,7 @@ if (isset($_GET['delete_id'])) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js"></script>
 
     <?php if ($message !== ""): ?>
     <script>

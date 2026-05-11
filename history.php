@@ -46,10 +46,10 @@ $res = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMIÈRE - My Tickets</title>
-    <link rel="stylesheet" href="css/base.css?v=5">
-    <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
-    <link rel="stylesheet" href="css/pages/footer.css?v=5">
-    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pages/dashboard.css">
+    <link rel="stylesheet" href="css/pages/footer.css">
+    <link rel="stylesheet" href="css/global.css">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <style>
         .refund-btn {
@@ -200,7 +200,7 @@ $res = $stmt->get_result();
 
     <nav class="lumiere-nav">
         <a href="movies.php" class="lumiere-logo">
-            <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE">
+            <img src="assets/images/logo.svg" alt="LUMIÈRE">
         </a>
 
         <div class="nav-links">
@@ -268,7 +268,7 @@ $res = $stmt->get_result();
     </div>
 
     <footer>
-        <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" class="logo-img">
+        <img src="assets/images/logo.svg" alt="LUMIÈRE" class="logo-img">
         <p>Where Every Seat Tells a Story.</p>
         <div class="footer-links">
             <a href="movies.php">Now Showing</a>
@@ -317,6 +317,6 @@ $res = $stmt->get_result();
             if (e.target === this) closeRefundModal();
         });
     </script>
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

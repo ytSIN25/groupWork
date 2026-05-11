@@ -18,9 +18,9 @@ if (isset($_SESSION['user_id']) && !isset($_GET['force'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMIÈRE - Sign In</title>
-    <link rel="stylesheet" href="css/base.css?v=5">
-    <link rel="stylesheet" href="css/pages/auth.css?v=5">
-    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pages/auth.css">
+    <link rel="stylesheet" href="css/global.css">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -40,7 +40,7 @@ if (isset($_SESSION['user_id']) && !isset($_GET['force'])) {
                 <div class="vintage-card auth-card auth-login">
                     <div class="corner-dec corner-tl"></div><div class="corner-dec corner-tr"></div><div class="corner-dec corner-bl"></div><div class="corner-dec corner-br"></div>
                     <div class="auth-header">
-                        <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE Logo">
+                        <img src="assets/images/logo.svg" alt="LUMIÈRE Logo">
                         <p>Welcome Back, Old Friend.</p>
                     </div>
                     <form id="loginForm">
@@ -65,7 +65,7 @@ if (isset($_SESSION['user_id']) && !isset($_GET['force'])) {
                     <div class="corner-dec corner-br"></div>
 
                     <div class="auth-header">
-                        <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE Logo">
+                        <img src="assets/images/logo.svg" alt="LUMIÈRE Logo">
                         <p>Purchase a Lifetime Pass.</p>
                     </div>
                     <form id="registerForm">
@@ -95,7 +95,7 @@ if (isset($_SESSION['user_id']) && !isset($_GET['force'])) {
         </div>
     </section>
 
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js"></script>
     <script>
         // LOGIN - sends credentials to api_login.php
         document.getElementById('loginForm').addEventListener('submit', async e => {

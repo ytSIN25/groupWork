@@ -13,10 +13,10 @@ if (!isset($_SESSION['user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMIÈRE - Now Showing</title>
     <meta name="description" content="Browse our curated selection of cinematic masterpieces at LUMIÈRE.">
-    <link rel="stylesheet" href="css/base.css?v=5">
-    <link rel="stylesheet" href="css/pages/index.css?v=5">
-    <link rel="stylesheet" href="css/pages/footer.css?v=5">
-    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pages/index.css">
+    <link rel="stylesheet" href="css/pages/footer.css">
+    <link rel="stylesheet" href="css/global.css">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
 </head>
 
@@ -28,7 +28,7 @@ if (!isset($_SESSION['user_id'])) {
 
     <nav class="lumiere-nav">
         <a href="index.php" class="lumiere-logo" data-no-transition>
-            <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE">
+            <img src="assets/images/logo.svg" alt="LUMIÈRE">
         </a>
 
         <div class="nav-links">
@@ -111,7 +111,7 @@ if (!isset($_SESSION['user_id'])) {
     </div>
 
     <footer>
-        <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" class="logo-img">
+        <img src="assets/images/logo.svg" alt="LUMIÈRE" class="logo-img">
         <p>Where Every Seat Tells a Story.</p>
         <div class="footer-links">
             <a href="movies.php">Now Showing</a>
@@ -122,7 +122,7 @@ if (!isset($_SESSION['user_id'])) {
         <p style="margin-top:30px; font-size:0.9rem; opacity:0.5;">© 2026 LUMIÈRE Cinemas. All rights reserved.</p>
     </footer>
 
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js"></script>
     <svg width="0" height="0" style="position: absolute;">
         <filter id="glass-distortion">
             <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="1" result="noise" />

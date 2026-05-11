@@ -151,10 +151,10 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMIÈRE - Patron Dashboard</title>
-    <link rel="stylesheet" href="css/base.css?v=5">
-    <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
-    <link rel="stylesheet" href="css/pages/footer.css?v=5">
-    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pages/dashboard.css">
+    <link rel="stylesheet" href="css/pages/footer.css">
+    <link rel="stylesheet" href="css/global.css">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -349,7 +349,7 @@ $stmt->close();
 
     <nav class="lumiere-nav">
         <div class="nav-left" style="display:flex; align-items:center; gap:25px;">
-            <a href="index.php" class="lumiere-logo"><img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" style="height:45px;"></a>
+            <a href="index.php" class="lumiere-logo"><img src="assets/images/logo.svg" alt="LUMIÈRE" style="height:45px;"></a>
         </div>
         <div class="nav-links">
             <a href="index.php" class="nav-link">Home</a>
@@ -657,7 +657,7 @@ $stmt->close();
     </div>
 
     <footer>
-        <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" class="logo-img">
+        <img src="assets/images/logo.svg" alt="LUMIÈRE" class="logo-img">
         <p>Where Every Seat Tells a Story.</p>
         <div class="footer-links">
             <a href="movies.php">Now Showing</a>
@@ -668,7 +668,7 @@ $stmt->close();
         <p style="margin-top:30px; font-size:0.9rem; opacity:0.5;">© 2026 LUMIÈRE Cinemas. All rights reserved.</p>
     </footer>
 
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js"></script>
     <script>
         function switchTab(event, tabId) {
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));

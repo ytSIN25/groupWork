@@ -204,7 +204,7 @@ $critic_reviews = [
   <div class="page-transition active" id="pageTransition"><span class="trans-logo">LUMIÈRE</span></div>
 
   <nav class="lumiere-nav">
-    <a href="movies.php" class="lumiere-logo"><img src="assets/images/logo.svg?v=5" alt="LUMIÈRE"></a>
+    <a href="movies.php" class="lumiere-logo"><img src="assets/images/logo.svg" alt="LUMIÈRE"></a>
     <div class="nav-links">
       <a href="index.php"          class="nav-link">Home</a>
       <a href="movies.php"         class="nav-link">Now Showing</a>
@@ -295,7 +295,7 @@ $critic_reviews = [
     </section>
 
     <footer>
-      <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" class="logo-img">
+      <img src="assets/images/logo.svg" alt="LUMIÈRE" class="logo-img">
       <p>Where Every Seat Tells a Story.</p>
       <div class="footer-links">
         <a href="movies.php">Now Showing</a>
@@ -307,7 +307,7 @@ $critic_reviews = [
     </footer>
   </div>
 
-  <script src="js/main.js?v=5"></script>
+  <script src="js/main.js"></script>
   <script>
     // Movie ID and login state passed from PHP
     const MOVIE_ID     = <?= intval($movie['movie_id']) ?>;

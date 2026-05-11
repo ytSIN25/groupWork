@@ -28,7 +28,7 @@ $members_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as tota
     </div>
 
     <nav class="lumiere-nav">
-        <a href="index.php" class="lumiere-logo" data-no-transition><img src="assets/images/logo.svg?v=5" alt="LUMIÈRE"></a>
+        <a href="index.php" class="lumiere-logo" data-no-transition><img src="assets/images/logo.svg" alt="LUMIÈRE"></a>
         <div class="nav-links">
             <a href="index.php" class="nav-link" data-no-transition style="color:var(--sunset-coral);">Home</a>
             <a href="movies.php" class="nav-link">Now Showing</a>
@@ -43,7 +43,7 @@ $members_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as tota
         <div class="hero-glow"></div>
 
         <div class="hero-content reveal">
-            <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" class="hero-logo blur-in">
+            <img src="assets/images/logo.svg" alt="LUMIÈRE" class="hero-logo blur-in">
             <h1 class="blur-in" data-delay="600"
                 style="color:var(--cream); font-size:clamp(2.5rem,5vw,4.5rem); font-style:italic; margin-bottom:15px; text-shadow:0 0 30px rgba(232,115,90,0.4);">
                 Where Every Seat Tells a Story</h1>
@@ -226,7 +226,7 @@ $members_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as tota
     </section>
 
     <footer>
-        <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" class="logo-img">
+        <img src="assets/images/logo.svg" alt="LUMIÈRE" class="logo-img">
         <p>Where Every Seat Tells a Story.</p>
         <div class="footer-links">
             <a href="movies.php">Now Showing</a>
@@ -237,7 +237,7 @@ $members_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as tota
         <p style="margin-top:30px; font-size:0.9rem; opacity:0.5;">© 2026 LUMIÈRE Cinemas. All rights reserved.</p>
     </footer>
 
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js"></script>
     <script>
         function animateCounter(el, target, dur) {
             let start = 0;

@@ -114,10 +114,10 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMIÈRE - Director's Dashboard</title>
-    <link rel="stylesheet" href="css/base.css?v=5">
-    <link rel="stylesheet" href="css/pages/dashboard.css?v=5">
-    <link rel="stylesheet" href="css/pages/footer.css?v=5">
-    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pages/dashboard.css">
+    <link rel="stylesheet" href="css/pages/footer.css">
+    <link rel="stylesheet" href="css/global.css">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -385,7 +385,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
         style="background:var(--noir, #0a0a0a); border-bottom:2px solid var(--retro-red, #b22222); display: flex; justify-content: space-between; padding: 15px 5%;">
         <div class="nav-left" style="display:flex; align-items:center;">
             <a href="index.php" class="lumiere-logo">
-                <img src="assets/images/logo.svg?v=5" alt="LUMIÈRE" style="height:40px;">
+                <img src="assets/images/logo.svg" alt="LUMIÈRE" style="height:40px;">
             </a>
 
             <span style="font-family:var(--font-accent, sans-serif); color:var(--retro-red, #b22222); font-size:1.1rem; letter-spacing:0.3em; margin-left:20px; border-left:1px solid #333; padding-left:20px;">DIRECTORATE</span>
@@ -643,7 +643,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
         </main>
     </div>
 
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js"></script>
     <script>
         function switchAdmin(event, tabId) {
             if (event) event.preventDefault();

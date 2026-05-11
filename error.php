@@ -22,8 +22,8 @@ $display_title = $titles[$error_code] ?? 'Technical Difficulties';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMIÈRE - <?= htmlspecialchars($display_title) ?></title>
-    <link rel="stylesheet" href="css/base.css?v=5">
-    <link rel="stylesheet" href="css/global.css?v=5">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/global.css">
     <style>
         .error-container {
             min-height: 100vh;
@@ -217,7 +217,7 @@ $display_title = $titles[$error_code] ?? 'Technical Difficulties';
         </div>
     </div>
 
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js"></script>
     <script>
         function toggleDetails() {
             const box = document.getElementById('detailsBox');
