@@ -74,11 +74,6 @@ if (!isset($_SESSION['user_id'])) {
                             <option value="Thriller">Thriller</option>
                         </select>
 
-                        <select id="priceFilter" style="border-bottom-color: var(--gold); flex: 1;">
-                            <option value="any">Any Price</option>
-                            <option value="low">Price: Low</option>
-                            <option value="high">Price: High</option>
-                        </select>
                     </div>
 
                     <button id="searchBtn" class="btn-primary" style="padding:10px 25px; font-size:0.95rem; z-index:4; position:relative;">Search Archive</button>
@@ -134,9 +129,6 @@ if (!isset($_SESSION['user_id'])) {
         document.getElementById('searchBtn').addEventListener('click', function() {
             const title = document.getElementById('titleSearch').value.toLowerCase().trim();
             const genre = document.getElementById('genreFilter').value;
-            const priceSort = document.getElementById('priceFilter').value;
-            
-            const grid = document.querySelector('.movies-grid');
             const cards = Array.from(document.querySelectorAll('.movie-card'));
 
             // Filtering Logic
@@ -153,16 +145,6 @@ if (!isset($_SESSION['user_id'])) {
                     card.style.display = 'none';
                 }
             });
-
-            // Sorting
-            if (priceSort !== 'any') {
-                const sortedCards = cards.sort((a, b) => {
-                    const valA = parseFloat(a.getAttribute('data-price-value') || 0);
-                    const valB = parseFloat(b.getAttribute('data-price-value') || 0);
-                    return priceSort === 'low' ? valA - valB : valB - valA;
-                });
-                sortedCards.forEach(card => grid.appendChild(card));
-            }
         });
     </script>
 </body>
