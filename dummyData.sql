@@ -26,11 +26,25 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- 1. Insert Sample Movies (Owned by Admin ID 1)
 INSERT INTO movies (movie_id, movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, start_date) 
 VALUES 
-(1, 'Oppenheimer', 1, 'Christopher Nolan', 'Historical', 2023, 'Cillian Murphy', 'Atomic bomb biography.', 'assets/images/poster-oppenheimer.png', 180, '2026-05-05'),
-(2, 'Dune: Part Two', 1, 'Denis Villeneuve', 'Sci-Fi', 2024, 'Zendaya', 'Desert epic.', 'assets/images/poster-dune.png', 166, '2026-05-08'),
-(3, 'Nosferatu', 1, 'Robert Eggers', 'Horror', 2024, 'Bill Skarsgård', 'Gothic horror.', 'assets/images/poster-nosferatu.png', 125, '2026-05-11'),
-(4, 'Interstellar', 1, 'Christopher Nolan', 'Sci-Fi', 2014, 'Matthew McConaughey', 'Space travel.', 'assets/images/poster-interstellar.png', 169, '2026-05-03'),
-(5, 'Blade Runner 2049', 1, 'Denis Villeneuve', 'Sci-Fi', 2017, 'Ryan Gosling', 'Neon detective.', 'assets/images/poster-bladerunner.png', 164, '2026-05-02');
+(1, 'Oppenheimer', 1, 'Christopher Nolan', 'Historical', 2023, 'Cillian Murphy',
+ 'A gripping portrait of J. Robert Oppenheimer, the visionary physicist behind the Manhattan Project, as his pursuit of scientific greatness leads to a creation capable of destroying the world and his own peace of mind.',
+ 'assets/images/poster-oppenheimer.png', 180, '2026-05-05'),
+
+(2, 'Dune: Part Two', 1, 'Denis Villeneuve', 'Sci-Fi', 2024, 'Zendaya',
+ 'Embracing his destiny, Paul Atreides rises among the Fremen to challenge a brutal empire, as love, prophecy, and vengeance reshape the fate of Arrakis and the universe beyond.',
+ 'assets/images/poster-dune.png', 166, '2026-05-08'),
+
+(3, 'Nosferatu', 1, 'Robert Eggers', 'Horror', 2024, 'Bill Skarsgård',
+ 'In a world shrouded in dread and superstition, a young woman becomes the object of obsession for an ancient vampire, unleashing a slow-burning nightmare of madness, desire, and death.',
+ 'assets/images/poster-nosferatu.png', 125, '2026-05-11'),
+
+(4, 'Interstellar', 1, 'Christopher Nolan', 'Sci-Fi', 2014, 'Matthew McConaughey',
+ 'Driven by love and sacrifice, a former pilot leads a desperate mission through wormholes and distant worlds to save humanity from extinction, discovering that time itself may be their greatest enemy and ally.',
+ 'assets/images/poster-interstellar.png', 169, '2026-05-03'),
+
+(5, 'Blade Runner 2049', 1, 'Denis Villeneuve', 'Sci-Fi', 2017, 'Ryan Gosling',
+ 'In a bleak future where artificial lives serve mankind, a lone blade runner uncovers a secret buried for decades, forcing him to question memory, identity, and what it truly means to be human.',
+ 'assets/images/poster-bladerunner.png', 164, '2026-05-02');
 
 -- 2. Insert Showtimes
 INSERT INTO showtimes (movie_id, auditorium_number, start_time)
