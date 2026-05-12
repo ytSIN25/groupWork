@@ -216,7 +216,7 @@ if (isset($_GET['delete_id'])) {
                             <?php endif; ?>
                             
                             <a href="?delete_id=<?php echo $target_promo['promotion_id']; ?>" class="btn-delete" 
-                               onclick="return confirm('Permanently retire this coupon from the archives?')">
+                               onclick="confirmRetire('?delete_id=<?php echo $target_promo['promotion_id']; ?>'); return false;">
                                 ✕ Retire Coupon
                             </a>
                         </div>
@@ -241,6 +241,27 @@ if (isset($_GET['delete_id'])) {
         });
     </script>
     <?php endif; ?>
+
+    <script>
+        function confirmRetire(url) {
+            Swal.fire({
+                title: 'Retire Coupon?',
+                text: 'This will permanently remove the coupon from the archives. This action cannot be undone.',
+                icon: 'warning',
+                background: '#F2E8D5',
+                color: '#0D0B0E',
+                showCancelButton: true,
+                confirmButtonColor: '#c62828',
+                cancelButtonColor: '#2A7A7A',
+                confirmButtonText: 'Yes, retire it',
+                cancelButtonText: 'Keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
