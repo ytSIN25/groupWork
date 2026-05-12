@@ -309,14 +309,14 @@ if (!isset($_SESSION['user_id'])) {
         <!-- Footer -->
         <footer>
             <img src="assets/images/logo.svg" alt="LUMIÈRE" class="logo-img">
-            <p style="font-family: var(--font-calligraphy); font-size: 1.8rem; color: var(--gold); margin: 20px 0;">Where every frame tells a story.</p>
+            <p>Where Every Seat Tells a Story.</p>
             <div class="footer-links" style="margin-top: 25px;">
                 <a href="movies.php">Now Showing</a>
                 <a href="about.php">The Cinema</a>
                 <a href="dashboard_user.php">Account</a>
                 <a href="dashboard_admin.php">Staff Area</a>
             </div>
-            <p style="margin-top:40px; font-size:0.9rem; opacity:0.3; font-family: var(--font-accent); letter-spacing: 0.1em;">© 2026 LUMIÈRE Cinemas. All rights reserved.</p>
+            <p style="margin-top:30px; font-size:0.9rem; opacity:0.5;">© 2026 LUMIÈRE Cinemas. All rights reserved.</p>
         </footer>
 
     </div>
