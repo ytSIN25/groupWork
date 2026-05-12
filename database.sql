@@ -139,3 +139,17 @@ CREATE TABLE IF NOT EXISTS user_preferences (
     preferred_genre   VARCHAR(100) DEFAULT '',
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- ------------------------------------------------
+-- Contact Messages
+-- -------------------------------------------------
+CREATE TABLE IF NOT EXISTS contact_messages (
+    message_id   INT AUTO_INCREMENT PRIMARY KEY,
+    user_id      INT DEFAULT  NULL,
+    name         VARCHAR(255) NOT NULL,
+    email        VARCHAR(255) NOT NULL,
+    subject      VARCHAR(255) NOT NULL,
+    message      TEXT NOT NULL,
+    submitted_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
+);

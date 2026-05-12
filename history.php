@@ -288,7 +288,7 @@ $orders = mysqli_fetch_all($res, MYSQLI_ASSOC);
     <div class="lumiere-modal-overlay" id="refundModal">
         <div class="lumiere-modal">
             <h3>Final Curtain?</h3>
-            <p>Do you wish to cancel this booking? This action is permanent and cannot be undone.</p>
+            <p>Do you wish to cancel this booking? This action is permanent and cannot be undone. Contact our box office for further assistance.</p>
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-cancel" onclick="closeRefundModal()">Keep Ticket</button>
                 <button class="modal-btn modal-btn-confirm" id="confirmRefundBtn">Refund Now</button>
