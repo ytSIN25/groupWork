@@ -481,7 +481,7 @@ $active_catalog_size = (int)($catalog_data['movie_count'] ?? 0);
                 <div style="background:var(--bg-card, #1a1520); border:1px solid rgba(212,168,83,0.1); padding:30px; border-radius:8px; margin-top: 30px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
                         <h3 style="color:var(--cream, #fff); font-size:1.4rem;">Current Programme</h3>
-                        <button class="btn-primary" style="padding:6px 18px; font-size:0.85rem; background:none; border:1px solid var(--gold); color:var(--gold); border-radius:4px; cursor:pointer;" onclick="switchAdmin(event, 'catalog'); setActiveNav('catalog')">Manage</button>
+                        <button class="btn-primary" style="padding:6px 18px; font-size:0.85rem; background:none; border:1px solid var(--gold); border-radius:4px; cursor:pointer;" onclick="switchAdmin(event, 'catalog'); setActiveNav('catalog')">Manage</button>
                     </div>
 
                     <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:20px;">
