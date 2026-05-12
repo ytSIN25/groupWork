@@ -205,6 +205,11 @@ $critic_reviews = [
 
   <nav class="lumiere-nav">
     <a href="movies.php" class="lumiere-logo"><img src="assets/images/logo.svg" alt="LUMIÈRE"></a>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+    </button>
     <div class="nav-links">
       <a href="index.php"          class="nav-link">Home</a>
       <a href="movies.php"         class="nav-link">Now Showing</a>
@@ -232,13 +237,42 @@ $critic_reviews = [
 
     <section class="editorial-section">
       <div class="editorial-flex">
-        <div class="editorial-left fade-up">
+
+        <div class="editorial-tale fade-up">
           <h2 style="margin-bottom:25px;">The Tale</h2>
           <p class="detail-synopsis">
             <?= nl2br(htmlspecialchars($movie['description'])) ?>
           </p>
+        </div>
 
-          <!-- ---------- Critic Reviews ---------- -->
+        <div class="editorial-right fade-right">
+          <h2 style="font-size:1.5rem; margin-bottom:25px;">Starring</h2>
+          <ul class="cast-list">
+            <?php foreach (explode(',', $movie['starring']) as $star): ?>
+            <li><span class="cast-name"><?= htmlspecialchars(trim($star)) ?></span></li>
+            <?php endforeach; ?>
+          </ul>
+          <div style="margin-top:40px;">
+            <h3 style="font-size:1.5rem; margin-bottom:15px;">Purchase Admission</h3>
+            <div class="ticket-tiers" id="tierSelector">
+              <div class="ticket-tier <?= ($user_pref_tier === 'Stalls')    ? 'selected' : '' ?>" data-tier="Stalls"    onclick="selectTier(this)">
+                <div><div class="tier-name">Stalls</div><div style="font-size:0.9rem;color:var(--mocha);font-style:italic;">Main level</div></div>
+                <div class="tier-price">€<?= number_format(LUMIERE_BASE_PRICE, 2) ?></div>
+              </div>
+              <div class="ticket-tier <?= ($user_pref_tier === 'Circle')    ? 'selected' : '' ?>" data-tier="Circle"    onclick="selectTier(this)">
+                <div><div class="tier-name">Circle</div><div style="font-size:0.9rem;color:var(--mocha);font-style:italic;">Balcony view</div></div>
+                <div class="tier-price">€<?= number_format(LUMIERE_BASE_PRICE * 1.5, 2) ?></div>
+              </div>
+              <div class="ticket-tier <?= ($user_pref_tier === 'Royal Box') ? 'selected' : '' ?>" data-tier="Royal Box" onclick="selectTier(this)">
+                <div><div class="tier-name">Royal Box</div><div style="font-size:0.9rem;color:var(--mocha);font-style:italic;">Private booth</div></div>
+                <div class="tier-price">€<?= number_format(LUMIERE_BASE_PRICE * 3, 2) ?></div>
+              </div>
+            </div>
+            <button class="btn-coral" style="width:100%;margin-top:25px;background:linear-gradient(135deg,var(--retro-red),var(--retro-red-glow));" onclick="proceedToBooking()">Select Seats</button>
+          </div>
+        </div>
+
+        <div class="editorial-reviews fade-up">
           <div class="reviews-section">
             <h2 style="margin-bottom:25px;">Critic Reviews</h2>
             <div class="reviews-grid">
@@ -252,7 +286,6 @@ $critic_reviews = [
             </div>
           </div>
 
-          <!-- ---------- Patron Reviews ---------- -->
           <div class="reviews-section" id="patron-reviews-section">
             <h2 style="margin-bottom:28px;">Patron Reviews</h2>
             <div id="patron-loading">
@@ -261,36 +294,8 @@ $critic_reviews = [
             </div>
             <div id="patron-content" style="display:none;"></div>
           </div>
-
         </div>
 
-        <div class="editorial-right fade-right">
-          <h2 style="font-size:1.5rem; margin-bottom:25px;">Starring</h2>
-          <ul class="cast-list">
-            <?php foreach (explode(',', $movie['starring']) as $star): ?>
-            <li><span class="cast-name"><?= htmlspecialchars(trim($star)) ?></span></li>
-            <?php endforeach; ?>
-          </ul>
-
-          <div style="margin-top:40px;">
-            <h3 style="font-size:1.5rem; margin-bottom:15px;">Purchase Admission</h3>
-            <div class="ticket-tiers" id="tierSelector">
-              <div class="ticket-tier <?= ($user_pref_tier === 'Stalls')    ? 'selected' : '' ?>" data-tier="Stalls"     onclick="selectTier(this)">
-                <div><div class="tier-name">Stalls</div><div style="font-size:0.9rem;color:var(--mocha);font-style:italic;">Main level</div></div>
-                <div class="tier-price">€<?= number_format(LUMIERE_BASE_PRICE, 2) ?></div>
-              </div>
-              <div class="ticket-tier <?= ($user_pref_tier === 'Circle')    ? 'selected' : '' ?>" data-tier="Circle"     onclick="selectTier(this)">
-                <div><div class="tier-name">Circle</div><div style="font-size:0.9rem;color:var(--mocha);font-style:italic;">Balcony view</div></div>
-                <div class="tier-price">€<?= number_format(LUMIERE_BASE_PRICE * 1.5, 2) ?></div>
-              </div>
-              <div class="ticket-tier <?= ($user_pref_tier === 'Royal Box') ? 'selected' : '' ?>" data-tier="Royal Box"  onclick="selectTier(this)">
-                <div><div class="tier-name">Royal Box</div><div style="font-size:0.9rem;color:var(--mocha);font-style:italic;">Private booth</div></div>
-                <div class="tier-price">€<?= number_format(LUMIERE_BASE_PRICE * 3, 2) ?></div>
-              </div>
-            </div>
-            <button class="btn-coral" style="width:100%;margin-top:25px;background:linear-gradient(135deg,var(--retro-red),var(--retro-red-glow));" onclick="proceedToBooking()">Select Seats</button>
-          </div>
-        </div>
       </div>
     </section>
 

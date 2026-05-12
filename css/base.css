@@ -456,6 +456,7 @@ a:hover {
   background: linear-gradient(180deg, rgba(13, 11, 14, 0.95) 0%, rgba(13, 11, 14, 0.6) 70%, transparent 100%);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  flex-wrap: wrap;
 }
 
 .lumiere-logo {
@@ -1018,3 +1019,57 @@ a:hover {
   padding: 100px 5%;
 }
 
+
+/* Nav base (ensures hamburger works on all pages) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  background: none;
+  border: none;
+  z-index: 1001;
+  width: 40px;
+  height: 40px;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--cream);
+  border-radius: 2px;
+  transition: transform 0.35s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 768px) {
+  .hamburger { display: flex; }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    padding: 12px 0 20px;
+    border-top: 1px solid rgba(212, 168, 83, 0.12);
+    margin-top: 12px;
+    gap: 0;
+  }
+
+  .nav-links.open { display: flex; }
+
+  .nav-links .nav-link {
+    padding: 14px 4px;
+    font-size: 1rem;
+    border-bottom: 1px solid rgba(212, 168, 83, 0.07);
+    letter-spacing: 0.15em;
+  }
+
+  .nav-links .nav-link:last-child { border-bottom: none; }
+}

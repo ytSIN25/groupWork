@@ -86,7 +86,7 @@ while ($row = $orders_res->fetch_assoc()) {
                 <!-- ----- Date Selector ----- -->
                 <div class="date-selector">
                     <p style="font-family:var(--font-accent); color:var(--mocha); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.2em; margin-bottom:10px; opacity:0.6;">1. Choose Date</p>
-                    <div class="date-scroll-container" style="display:flex; gap:10px; overflow-x:auto; padding:10px; width:100%; max-width:800px;">
+                    <div class="date-scroll-container">
                         <?php
                         $start = new DateTime($movie['start_date']);
                         $today = new DateTime('today');

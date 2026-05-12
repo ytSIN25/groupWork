@@ -30,7 +30,13 @@ if (!isset($_SESSION['user_id'])) {
         <a href="index.php" class="lumiere-logo" data-no-transition>
             <img src="assets/images/logo.svg" alt="LUMIÈRE">
         </a>
-
+    
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
         <div class="nav-links">
             <a href="index.php" class="nav-link">Home</a>
             <a href="movies.php" class="nav-link" style="color:var(--sunset-coral);">Now Showing</a>
