@@ -894,7 +894,7 @@ a:hover {
 
 .filter-group select {
   background: transparent;
-  color: var(--gold);
+  color: #e7dece;
   border: none;
   border-bottom: 1px solid var(--mocha);
   padding: 8px;
