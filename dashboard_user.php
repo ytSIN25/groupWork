@@ -470,10 +470,7 @@ $stmt->close();
                 <h2 style="font-family:var(--font-display); font-style:italic; font-size:1.6rem; color:var(--cream); margin-bottom:4px;">
                     <?= htmlspecialchars($user['name']) ?>
                 </h2>
-                <p style="font-family:var(--font-accent); color:var(--mocha); font-size:0.8rem; margin-bottom:4px; opacity:0.8;">
-                    <?= htmlspecialchars($user['email']) ?>
-                </p>
-                <p style="font-family:var(--font-accent); color:var(--gold); text-transform:uppercase; font-size:0.75rem; letter-spacing:0.2em;">
+                <p style="font-family:var(--font-accent); color:var(--gold); text-transform:uppercase; font-size:0.9rem; letter-spacing:0.2em;">
                     <?= htmlspecialchars($user['tier']) ?>
                 </p>
             </div>
