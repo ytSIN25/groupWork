@@ -340,6 +340,99 @@ $stmt->close();
         }
 
         .star-display { color: var(--sunset-coral); letter-spacing: 2px; }
+
+        .sidebar-overlay { display: none; }
+        .sidebar-toggle  { display: none; }
+
+        @media (max-width: 768px) {
+            .page-wrapper {
+                flex-direction: column !important;
+                padding: 100px 5% 40px !important;
+                gap: 0 !important;
+            }
+
+            /* Sidebar slides in from left */
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -300px;
+                width: 280px;
+                height: 100vh;
+                z-index: 1500;
+                overflow-y: auto;
+                border-radius: 0;
+                padding: 80px 20px 40px;
+                transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                background: rgba(20, 16, 26, 0.98);
+                border-right: 1px solid rgba(212, 168, 83, 0.15);
+            }
+
+            .sidebar.open {
+                left: 0;
+                box-shadow: 10px 0 50px rgba(0, 0, 0, 0.7);
+            }
+
+            .sidebar-overlay {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.75);
+                backdrop-filter: blur(3px);
+                z-index: 1400;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.35s ease;
+            }
+
+            .sidebar-overlay.active {
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            .sidebar-toggle {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                position: fixed;
+                bottom: 28px;
+                left: 20px;
+                z-index: 1300;
+                background: var(--sunset-coral);
+                color: white;
+                border: none;
+                border-radius: 50px;
+                padding: 13px 20px;
+                font-family: var(--font-accent);
+                font-size: 0.8rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                cursor: pointer;
+            }
+
+            .user-stats {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+
+            .ticket-card {
+                flex-direction: column;
+            }
+
+            .ticket-main {
+                border-right: none !important;
+                border-bottom: 2px dashed rgba(13, 11, 14, 0.2);
+            }
+
+            .order-row {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start !important;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
 
@@ -351,6 +444,11 @@ $stmt->close();
         <div class="nav-left" style="display:flex; align-items:center; gap:25px;">
             <a href="index.php" class="lumiere-logo"><img src="assets/images/logo.svg" alt="LUMIÈRE" style="height:45px;"></a>
         </div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <div class="nav-links">
             <a href="index.php" class="nav-link">Home</a>
             <a href="movies.php" class="nav-link">Now Showing</a>
@@ -363,13 +461,19 @@ $stmt->close();
     <div class="page-wrapper" style="padding-top:140px; max-width:1400px; margin:0 auto; display:flex; gap:60px;">
         <!-- ---------- Sidebar ---------- -->
         <aside class="sidebar fade-up">
+            <!-- Close button (mobile only) -->
+            <button onclick="closeSidebar()" id="sidebarCloseBtn" style="display:none; position:absolute; top:20px; right:16px; background:none; border:none; color:var(--mocha); font-size:1.4rem; cursor:pointer; line-height:1;">✕</button>
+
             <div style="text-align:center; margin-bottom:40px;">
                 <img src="<?= htmlspecialchars($user['avatar']) ?>" alt="Profile"
-                    style="width:100px; height:100px; border-radius:50%; border:3px solid var(--gold); margin-bottom:15px; padding:5px; background:var(--bg-card);">
-                <h2 style="font-family:var(--font-display); font-style:italic; font-size:1.8rem; color:var(--cream);">
+                    style="width:90px; height:90px; border-radius:50%; border:3px solid var(--gold); margin-bottom:12px; padding:4px; background:var(--bg-card); display:block; margin-left:auto; margin-right:auto;">
+                <h2 style="font-family:var(--font-display); font-style:italic; font-size:1.6rem; color:var(--cream); margin-bottom:4px;">
                     <?= htmlspecialchars($user['name']) ?>
                 </h2>
-                <p style="font-family:var(--font-accent); color:var(--gold); text-transform:uppercase; font-size:0.8rem; letter-spacing:0.2em;">
+                <p style="font-family:var(--font-accent); color:var(--mocha); font-size:0.8rem; margin-bottom:4px; opacity:0.8;">
+                    <?= htmlspecialchars($user['email']) ?>
+                </p>
+                <p style="font-family:var(--font-accent); color:var(--gold); text-transform:uppercase; font-size:0.75rem; letter-spacing:0.2em;">
                     <?= htmlspecialchars($user['tier']) ?>
                 </p>
             </div>
@@ -668,13 +772,38 @@ $stmt->close();
         <p style="margin-top:30px; font-size:0.9rem; opacity:0.5;">© 2026 LUMIÈRE Cinemas. All rights reserved.</p>
     </footer>
 
+    <!-- Sidebar overlay & toggle (mobile only) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰ &nbsp;Menu</button>
+
     <script src="js/main.js"></script>
     <script>
+        function toggleSidebar() {
+            const sidebar  = document.querySelector('.sidebar');
+            const overlay  = document.getElementById('sidebarOverlay');
+            const closeBtn = document.getElementById('sidebarCloseBtn');
+            const isOpen   = sidebar.classList.toggle('open');
+            overlay.classList.toggle('active', isOpen);
+            if (closeBtn) closeBtn.style.display = isOpen ? 'block' : 'none';
+        }
+
+        function closeSidebar() {
+            const sidebar  = document.querySelector('.sidebar');
+            const overlay  = document.getElementById('sidebarOverlay');
+            const closeBtn = document.getElementById('sidebarCloseBtn');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            if (closeBtn) closeBtn.style.display = 'none';
+        }
+
         function switchTab(event, tabId) {
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.getAttribute('onclick')?.includes(`'${tabId}'`)) btn.classList.add('active');
+            });
+            if (window.innerWidth <= 768) closeSidebar();
         }
 
         async function logout() {

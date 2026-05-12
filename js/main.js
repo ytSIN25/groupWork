@@ -1,6 +1,6 @@
 /* ================================================
      LUMIÈRE - Main JS
-     ================================================ */
+   ================================================ */
 
 const API = {
     // Get current user from PHP session
@@ -126,3 +126,21 @@ document.addEventListener('click', e => {
         triggerPageTransition(link.getAttribute('href'));
     }
 });
+
+// Mobile menu toggle
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const navLinks = document.querySelector('.nav-links');
+
+if (hamburgerBtn && navLinks) {
+    hamburgerBtn.addEventListener('click', () => {
+        hamburgerBtn.classList.toggle('open');
+        navLinks.classList.toggle('open');
+    });
+
+    navLinks.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburgerBtn.classList.remove('open');
+            navLinks.classList.remove('open');
+        });
+    });
+}

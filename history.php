@@ -52,6 +52,18 @@ $orders = mysqli_fetch_all($res, MYSQLI_ASSOC);
     <link rel="stylesheet" href="css/global.css">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <style>
+        .lumiere-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .timeline-section {
+            margin-top: 80px;
+        }
+
         .refund-btn {
             background: transparent;
             border: 1px solid var(--sunset-coral);
@@ -201,7 +213,11 @@ $orders = mysqli_fetch_all($res, MYSQLI_ASSOC);
         <a href="movies.php" class="lumiere-logo">
             <img src="assets/images/logo.svg" alt="LUMIÈRE">
         </a>
-
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <div class="nav-links">
             <a href="index.php" class="nav-link">Home</a>
             <a href="movies.php" class="nav-link">Now Showing</a>

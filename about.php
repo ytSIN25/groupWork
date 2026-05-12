@@ -60,12 +60,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
         <a href="index.php" class="lumiere-logo" data-no-transition>
             <img src="assets/images/logo.svg" alt="LUMIÈRE">
         </a>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <div class="nav-links">
             <a href="index.php" class="nav-link">Home</a>
             <a href="movies.php" class="nav-link">Now Showing</a>
             <a href="history.php" class="nav-link">My Tickets</a>
             <a href="dashboard_user.php" class="nav-link">Account</a>
-            <a href="about.php" class="nav-link" style="color:var(--sunset-coral); border-bottom: 1.5px solid var(--sunset-coral);">The Cinema</a>
+            <a href="about.php" class="nav-link" style="color:var(--sunset-coral);">The Cinema</a>
         </div>
     </nav>
 
