@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div style="display: flex; gap: 30px;">
-                        <div class="form-group" style="flex: 1;">
+                        <div class="admin-form-group" style="flex: 1;">
                             <label style="color: var(--bg-deep); font-weight: 600;">Genre</label>
                             <select name="genre" class="typewriter-input" style="color: var(--bg-deep); background: transparent; border-color: var(--mocha); width: 100%; cursor: pointer;">
                                 <option value="" disabled selected>Select Genre</option>

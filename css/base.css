@@ -773,12 +773,35 @@ a:hover {
   border: none;
   border-bottom: 1.5px solid rgba(212, 168, 83, 0.25);
   padding: 12px 8px;
-  color: #e7dece;
+  color: var(--cream);
   font-family: var(--font-body);
   font-size: 1.15rem;
   outline: none;
   transition: var(--transition);
   cursor: pointer;
+}
+
+.form-group select option {
+  background: var(--bg-dark);
+}
+
+.admin-form-group select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: none;
+  border-bottom: 1.5px solid rgba(212, 168, 83, 0.25);
+  padding: 12px 8px;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  outline: none;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.admin-form-group select option {
+  background: white;
+  color: var(--bg-deep);
 }
 
 .form-group input:focus {
@@ -894,7 +917,7 @@ a:hover {
 
 .filter-group select {
   background: transparent;
-  color: #e7dece;
+  color: var(--cream);
   border: none;
   border-bottom: 1px solid var(--mocha);
   padding: 8px;
@@ -903,6 +926,10 @@ a:hover {
   outline: none;
   cursor: pointer;
   appearance: none;
+}
+
+.filter-group select option {
+  background: var(--bg-dark);
 }
 
 

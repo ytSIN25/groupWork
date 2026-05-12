@@ -240,7 +240,7 @@ if (isset($_POST['delete_movie'])) {
                             </div>
 
                             <div style="display: flex; gap: 20px;">
-                                <div class="form-group" style="flex: 1;">
+                                <div class="admin-form-group" style="flex: 1;">
                                     <label style="color: var(--bg-deep); font-weight: 600;">Genre</label>
                                     <select name="genre" class="typewriter-input" style="color: var(--bg-deep); border-color: var(--mocha); width: 100%; cursor: pointer;">
                                         <?php
