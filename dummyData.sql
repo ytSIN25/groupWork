@@ -1,8 +1,3 @@
--- ============================================
--- LUMIÈRE Cinema - Dummy Data Population Script
--- ============================================
-
--- Disable foreign key checks to allow clearing tables with dependencies
 SET FOREIGN_KEY_CHECKS = 0;
 DELETE FROM orders;
 DELETE FROM showtimes;
@@ -10,43 +5,32 @@ DELETE FROM promotions;
 DELETE FROM movies;
 DELETE FROM ratings;
 
--- Resetting Auto-Increments to ensure IDs start from 1
 ALTER TABLE orders AUTO_INCREMENT = 1;
 ALTER TABLE showtimes AUTO_INCREMENT = 1;
 ALTER TABLE promotions AUTO_INCREMENT = 1;
 ALTER TABLE movies AUTO_INCREMENT = 1;
-
--- Clean up users
 DELETE FROM users WHERE user_id > 1;
 ALTER TABLE users AUTO_INCREMENT = 2;
-
--- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;
 
--- 1. Insert Sample Movies (Owned by Admin ID 1)
 INSERT INTO movies (movie_id, movie_name, user_id, director, genre, release_year, starring, description, poster_path, duration, start_date) 
 VALUES 
 (1, 'Oppenheimer', 1, 'Christopher Nolan', 'Historical', 2023, 'Cillian Murphy',
  'A gripping portrait of J. Robert Oppenheimer, the visionary physicist behind the Manhattan Project, as his pursuit of scientific greatness leads to a creation capable of destroying the world and his own peace of mind.',
  'assets/images/poster-oppenheimer.png', 180, '2026-05-05'),
-
 (2, 'Dune: Part Two', 1, 'Denis Villeneuve', 'Sci-Fi', 2024, 'Zendaya',
  'Embracing his destiny, Paul Atreides rises among the Fremen to challenge a brutal empire, as love, prophecy, and vengeance reshape the fate of Arrakis and the universe beyond.',
  'assets/images/poster-dune.png', 166, '2026-05-08'),
-
 (3, 'Nosferatu', 1, 'Robert Eggers', 'Horror', 2024, 'Bill Skarsgård',
  'In a world shrouded in dread and superstition, a young woman becomes the object of obsession for an ancient vampire, unleashing a slow-burning nightmare of madness, desire, and death.',
  'assets/images/poster-nosferatu.png', 125, '2026-05-11'),
-
 (4, 'Interstellar', 1, 'Christopher Nolan', 'Sci-Fi', 2014, 'Matthew McConaughey',
  'Driven by love and sacrifice, a former pilot leads a desperate mission through wormholes and distant worlds to save humanity from extinction, discovering that time itself may be their greatest enemy and ally.',
  'assets/images/poster-interstellar.png', 169, '2026-05-03'),
-
 (5, 'Blade Runner 2049', 1, 'Denis Villeneuve', 'Sci-Fi', 2017, 'Ryan Gosling',
  'In a bleak future where artificial lives serve mankind, a lone blade runner uncovers a secret buried for decades, forcing him to question memory, identity, and what it truly means to be human.',
  'assets/images/poster-bladerunner.png', 164, '2026-05-02');
 
--- 2. Insert Showtimes
 INSERT INTO showtimes (movie_id, auditorium_number, start_time)
 VALUES 
 (1, 1, '14:00:00'), (1, 1, '17:30:00'), (1, 1, '21:00:00'),
@@ -55,7 +39,6 @@ VALUES
 (4, 2, '14:30:00'), (4, 2, '18:00:00'), (4, 2, '21:30:00'),
 (5, 3, '14:30:00'), (5, 3, '18:00:00'), (5, 3, '21:30:00');
 
--- 3. Insert 10 Users (Patrons)
 INSERT INTO users (user_id, name, email, password, role, tier, avatar) VALUES
 (2, 'Julian Vane', 'julian@patron.com', '$2y$12$eSUJY1n7u219LnGACRK3aer.EnLu8Ik643haSD5WPQkAowOL5D6sS', 'patron', 'Gold Reel Member', 'https://api.dicebear.com/7.x/notionists/svg?seed=Julian'),
 (3, 'Clara Oswald', 'clara@patron.com', '$2y$12$eSUJY1n7u219LnGACRK3aer.EnLu8Ik643haSD5WPQkAowOL5D6sS', 'patron', 'Silver Reel Member', 'https://api.dicebear.com/7.x/notionists/svg?seed=Clara'),
@@ -68,7 +51,6 @@ INSERT INTO users (user_id, name, email, password, role, tier, avatar) VALUES
 (10, 'River Song', 'river@patron.com', '$2y$12$eSUJY1n7u219LnGACRK3aer.EnLu8Ik643haSD5WPQkAowOL5D6sS', 'patron', 'Director Tier', 'https://api.dicebear.com/7.x/notionists/svg?seed=River'),
 (11, 'Jack Harkness', 'jack@patron.com', '$2y$12$eSUJY1n7u219LnGACRK3aer.EnLu8Ik643haSD5WPQkAowOL5D6sS', 'patron', 'Silver Reel Member', 'https://api.dicebear.com/7.x/notionists/svg?seed=Jack');
 
--- 4. Insert Dummy Orders
 INSERT INTO orders (user_id, movie_id, show_date, show_time, seats, num_seats, total_price, cc_number, cc_expiry, cc_cvc) VALUES
 (2, 1, '2026-05-15', '14:00:00', 'C4, C5', 2, 24.00, '4111222233334444', '12/27', '123'),
 (3, 1, '2026-05-15', '17:30:00', 'D6, D7', 2, 24.00, '5555666677778888', '11/26', '456'),

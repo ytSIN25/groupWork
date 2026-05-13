@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Delete
-if (isset($_POST['delete_movie'])) {
+if (isset($_POST['delete_movie']) && $_POST['delete_movie'] === '1') {
     // Fetch poster path
     $stmt_path = $conn->prepare("SELECT poster_path FROM movies WHERE movie_id = ? AND user_id = ?");
     $admin_id = $_SESSION['user_id'];
@@ -317,7 +317,7 @@ if (isset($_POST['delete_movie'])) {
                             <button type="button" class="btn-primary" onclick="confirmDelete()" style="width: 100%; border-color: var(--retro-red); color: var(--retro-red); background: transparent;">
                                 Permanent Deletion
                             </button>
-                            <input type="hidden" name="delete_movie" id="deleteTrigger" value="0">
+                            <input type="hidden" id="deleteTrigger" value="0">
                         </div>
                     </div>
                 </div>

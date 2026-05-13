@@ -435,7 +435,7 @@
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
     "tale    right"
-    "reviews right";
+    "reviews reviews";
   gap: 0 80px;
 }
 
