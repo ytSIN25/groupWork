@@ -37,7 +37,7 @@ if ($user['role'] === 'admin') {
 $userId = $user['user_id'];
 $firstName = explode(' ', $user['name'])[0];
 
-// ---------- Stats ----------
+//  Stats 
 // Total orders
 $stmt = $conn->prepare('SELECT COUNT(*) as total FROM orders WHERE user_id = ?');
 if (!$stmt) {
@@ -66,7 +66,7 @@ $stmt->execute();
 $totalRatings = (int) $stmt->get_result()->fetch_assoc()['total'];
 $stmt->close();
 
-// ---------- Upcoming tickets ----------
+// Upcoming tickets 
 $stmt = $conn->prepare(
     'SELECT o.order_id, o.seats, o.num_seats, o.total_price, o.order_date,
             o.show_date, o.show_time,
@@ -82,7 +82,7 @@ $stmt->execute();
 $upcomingTickets = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
-// ---------- Past orders ----------
+// Past orders 
 $stmt = $conn->prepare(
     'SELECT o.order_id, o.seats, o.num_seats, o.total_price, o.order_date,
             o.show_date, o.show_time,
@@ -99,7 +99,7 @@ $stmt->execute();
 $pastOrders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
-// ---------- Ratings / History ----------
+// Ratings / History 
 $stmt = $conn->prepare(
     'SELECT r.content, r.star_num, r.rating_id,
             m.movie_name
@@ -114,7 +114,7 @@ $stmt->execute();
 $myRatings = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
-// ---------- User preferences ----------
+// User preferences 
 $stmt = $conn->prepare('SELECT preferred_seating, preferred_snack, preferred_genre FROM user_preferences WHERE user_id = ?');
 if (!$stmt) {
     header('Location: error.php?code=db&msg=Preference Archive Missing&details=' . urlencode("The table 'user_preferences' is missing from the database. Please run the provided SQL setup script. Error: " . $conn->error));
@@ -133,7 +133,7 @@ if (!$preferences) {
     ];
 }
 
-// ---------- Available promotions ----------
+// Available promotions 
 $stmt = $conn->prepare(
     'SELECT promotion_id, discount_value, promo_code, description, minimum_spend
      FROM promotions
@@ -144,9 +144,9 @@ $stmt->execute();
 $promotions = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -459,7 +459,7 @@ $stmt->close();
     </nav>
 
     <div class="page-wrapper" style="padding-top:140px; max-width:1400px; margin:0 auto; display:flex; gap:60px;">
-        <!-- ---------- Sidebar ---------- -->
+        <!--  Sidebar  -->
         <aside class="sidebar fade-up">
             <!-- Close button (mobile only) -->
             <button onclick="closeSidebar()" id="sidebarCloseBtn" style="display:none; position:absolute; top:20px; right:16px; background:none; border:none; color:var(--mocha); font-size:1.4rem; cursor:pointer; line-height:1;">✕</button>
@@ -486,7 +486,7 @@ $stmt->close();
             <button onclick="logout()" class="btn-primary" style="width:100%; text-align:center; border-color:var(--retro-red); color:var(--retro-red); cursor:pointer;">Log Out</button>
         </aside>
 
-        <!-- ---------- Main content ---------- -->
+        <!--  Main content  -->
         <main style="flex:1;">
             <!-- ----- Overview ----- -->
             <div id="overview" class="tab-pane active">
