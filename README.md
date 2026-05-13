@@ -41,8 +41,8 @@ LUMIÈRE is a premium, web-based cinema management and patron booking system des
     - The `assets/uploads/` directory must be writeable by the server for movie poster uploads.
 
 3.  **Default Credentials (if using dummy data)**:
-    - **Admin**: `aaa@aaa` / `123`
-    - **Patron**: `julian@patron.com` / `123`
+    - **Admin**: `arthur@lumiere.com` / `admin`
+    - **Patron**: `julian@patron.com` / `patron123`
 
 ## 📂 Project Structure
 
